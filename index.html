@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#075c46">
+<title>Identitas Diriku — Media Pembelajaran Interaktif</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito:wght@400;600;700;800;900&display=swap');
+:root{--green:#075c46;--green2:#08785b;--mint:#e7f6ed;--gold:#e6b94f;--gold2:#f7d985;--ink:#17352d;--muted:#62776f;--paper:#fffdf7;--line:#dce9df;--rose:#ffe8e3;--shadow:0 18px 48px rgba(9,62,45,.13)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(145deg,#f2fbf4 0%,#fffaf0 55%,#eaf7ef 100%);color:var(--ink);font-family:Nunito,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #e6b94f;outline-offset:3px}
+.screen{display:none;min-height:100vh;padding:clamp(14px,3vw,34px)}
+.screen.active{display:block;animation:appear .35s ease}
+@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-9px) rotate(1deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shimmer{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+.splash{position:fixed;inset:0;z-index:100;background:radial-gradient(circle at 50% 40%,#138765,#064332 70%);color:white;display:grid;place-items:center;text-align:center;transition:opacity .45s,visibility .45s}
+.splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+.splash-mark{width:88px;height:88px;border-radius:28px;display:grid;place-items:center;background:linear-gradient(135deg,#f5d67d,#fff0b9);color:#075c46;font-size:42px;margin:0 auto 20px;box-shadow:0 12px 35px #002f2455;animation:bob 1.2s infinite}
+.splash h1{font-size:clamp(1.4rem,4vw,2.3rem);margin:0 0 8px}.splash p{color:#d9f2e5;margin:0}
+.cover-wrap{min-height:calc(100vh - 2*clamp(14px,3vw,34px));max-width:1150px;margin:auto;display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(20px,5vw,64px);align-items:center}
+.cover-copy{padding:clamp(8px,3vw,26px)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid #b6ddc4;background:#f0fbf3;color:var(--green);border-radius:99px;padding:8px 13px;font-size:.78rem;font-weight:900;letter-spacing:.07em;text-transform:uppercase}
+.cover-title{font-size:clamp(2.2rem,5.4vw,4.8rem);line-height:1.04;letter-spacing:-.04em;margin:20px 0 20px;color:var(--green);max-width:720px}
+.cover-title span{color:#c18c17}
+.badges{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:26px}.badge{background:#fff;border:1px solid var(--line);border-radius:99px;padding:8px 12px;font-weight:800;color:#416358;font-size:.85rem}
+.cover-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.btn{border:0;border-radius:15px;padding:12px 18px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .18s,box-shadow .18s,background .18s;min-height:46px}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:linear-gradient(135deg,var(--green2),var(--green));color:#fff;box-shadow:0 9px 20px #075c4630}
+.btn-gold{background:linear-gradient(135deg,#f6d67c,#e6b94f);color:#4c3907;box-shadow:0 9px 20px #b8872428}
+.btn-light{background:#fff;color:var(--green);border:1px solid #cfe2d4}
+.btn-soft{background:#edf7ef;color:var(--green);border:1px solid #d7eade}
+.btn-danger{background:#fff0ed;color:#a63c2d;border:1px solid #ffd2c8}
+.btn:disabled{opacity:.42;cursor:not-allowed;transform:none;box-shadow:none}
+.visual-card{position:relative;min-height:420px;display:grid;place-items:center;border-radius:38px;background:linear-gradient(145deg,#e2f6e8,#fff3d3);border:1px solid #d4e9d9;box-shadow:var(--shadow);overflow:hidden}
+.visual-card:before,.visual-card:after{content:"";position:absolute;border-radius:50%;background:#fff9;filter:blur(1px)}
+.visual-card:before{width:230px;height:230px;right:-65px;top:-55px}.visual-card:after{width:160px;height:160px;left:-55px;bottom:-40px}
+.cover-art{width:min(92%,500px);height:auto;z-index:1;animation:floaty 4.2s ease-in-out infinite}
+.art-caption{position:absolute;bottom:20px;left:18px;right:18px;z-index:2;text-align:center;background:#ffffffdb;border:1px solid #fff;border-radius:16px;padding:11px;color:#42685a;font-weight:800}
+.container{max-width:1050px;margin:0 auto}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.brand-mini{display:flex;align-items:center;gap:10px;font-weight:900;color:var(--green)}
+.brand-icon{width:42px;height:42px;border-radius:14px;background:var(--green);color:#fff;display:grid;place-items:center;font-size:22px}
+.student-chip{background:#fff;border:1px solid var(--line);border-radius:99px;padding:9px 13px;color:#416358;font-weight:800}
+.panel{background:#fff;border:1px solid #e0ece3;border-radius:25px;box-shadow:var(--shadow);padding:clamp(18px,3vw,30px)}
+.panel h1,.panel h2{color:var(--green);margin-top:0}
+.center-panel{max-width:650px;margin:5vh auto}
+.form-grid{display:grid;gap:15px}
+.field{display:grid;gap:7px;font-weight:800;color:#34594c}
+.field input{width:100%;padding:13px 15px;border:1px solid #ccdfd1;border-radius:13px;background:#fbfefb;color:var(--ink)}
+.form-error{min-height:22px;color:#b63c2c;font-weight:800;font-size:.9rem}
+.guide-layout{max-width:780px;margin:4vh auto}
+.guide-number{color:#b27e10;font-weight:900;font-size:.85rem;letter-spacing:.1em;text-transform:uppercase}
+.guide-illustration{font-size:4rem;margin:16px 0;animation:bob 2s infinite}
+.guide-controls{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:24px}
+.dots{display:flex;gap:7px;justify-content:center;margin-top:18px}.dot{width:9px;height:9px;border-radius:99px;background:#d2e4d7}.dot.active{width:25px;background:var(--gold)}
+.menu-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;flex-wrap:wrap;margin:8px 0 22px}
+.menu-heading h1{font-size:clamp(1.8rem,4vw,2.8rem);color:var(--green);margin:0}
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.menu-card{background:#fff;border:1px solid #deebe1;border-radius:24px;padding:22px;box-shadow:0 10px 28px #124d3810;display:flex;flex-direction:column;min-height:250px}
+.menu-card .menu-emoji{font-size:2.7rem;margin-bottom:12px}.menu-card h2{color:var(--green);margin:0 0 8px}.menu-card p{color:var(--muted);line-height:1.55;flex:1;margin:0 0 18px}.menu-card.locked{background:#f3f6f3;filter:saturate(.55)}.menu-card.locked .menu-emoji{opacity:.65}
+.status{font-size:.75rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:6px 10px;background:#e2f5e8;color:#176b4f;display:inline-block;align-self:flex-start;margin-bottom:12px}.status.locked{background:#ecefed;color:#6e7a73}
+.progress-track{height:9px;background:#e7f0e9;border-radius:99px;overflow:hidden;margin:12px 0 18px}.progress-fill{height:100%;background:linear-gradient(90deg,#0a805e,#e7bb50);border-radius:99px;transition:width .3s}
+.content-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:15px}
+.content-head h1{margin:0;color:var(--green);font-size:clamp(1.55rem,3vw,2.3rem)}
+.counter{font-weight:900;color:#9c7417;background:#fff3cf;border:1px solid #f3df9c;padding:8px 12px;border-radius:99px;font-size:.86rem}
+.lesson-body{font-size:1.02rem;line-height:1.78;color:#314f44}
+.lesson-body h3{color:var(--green);margin:22px 0 6px;font-size:1.06rem}
+.lesson-body p{margin:7px 0 14px}
+.local-box,.kbc-box,.quran-box{border-radius:17px;padding:16px;margin:16px 0;border:1px solid}
+.local-box{background:#eff9f1;border-color:#d5ead9}.kbc-box{background:#fff7df;border-color:#f0e0ac}.quran-box{background:#f5f0ff;border-color:#e4d8fa}
+.box-label{font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;font-weight:900;margin-bottom:6px;color:#386b53}
+.quran-box .box-label{color:#6c4c98}
+.arabic{font-family:Amiri,"Noto Naskh Arabic",serif;font-size:clamp(1.45rem,3vw,2rem);line-height:1.8;text-align:right;color:#44336c;margin:6px 0;direction:rtl}
+.translation{font-style:italic;color:#56477a;line-height:1.65}
+.activity{margin-top:24px;padding:19px;border-radius:20px;border:1px solid #e2eadd;background:linear-gradient(135deg,#fbfefb,#fffaf0)}
+.activity h3{margin:0 0 8px;color:var(--green)}.activity p{margin:0 0 13px;color:#536a60}
+.option-grid{display:grid;gap:10px}
+.option-btn{display:flex;align-items:flex-start;gap:10px;text-align:left;width:100%;border:1px solid #d8e6dc;background:#fff;border-radius:14px;padding:12px 14px;color:#284c3d;font-weight:800;line-height:1.4}
+.option-btn:hover{border-color:#91c9a3;background:#f6fcf7}
+.option-btn.selected{border-color:#0b805d;background:#e6f6eb;box-shadow:inset 0 0 0 1px #0b805d}
+.option-btn.correct{border-color:#29996c;background:#e3f8eb}.option-btn.wrong{border-color:#d56a5a;background:#fff0ec}
+.feedback{margin-top:13px;padding:12px 14px;border-radius:13px;font-weight:800;line-height:1.5;display:none}
+.feedback.show{display:block}.feedback.good{background:#e5f7eb;color:#176447;border:1px solid #c5e8d0}.feedback.bad{background:#fff0ec;color:#a03c2e;border:1px solid #ffd1c7}.feedback.info{background:#eef4ff;color:#35568c;border:1px solid #d5e1fb}
+.nav-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:22px}
+.stimulus{background:#f5faf6;border-left:5px solid #0d805d;padding:16px 18px;border-radius:0 16px 16px 0;line-height:1.7;color:#36564a;margin:16px 0}
+.question-line{font-weight:900;font-size:1.08rem;line-height:1.5;margin:12px 0}
+.task-grid{display:grid;gap:10px}
+.match-row{display:grid;grid-template-columns:minmax(100px,1fr) minmax(150px,1.2fr);align-items:center;gap:12px;padding:11px;background:#fff;border:1px solid var(--line);border-radius:13px}
+.match-row select{min-width:0;width:100%;border:1px solid #cadfd0;border-radius:10px;padding:10px;background:#fafffb;color:var(--ink)}
+.order-list{display:grid;gap:9px}.order-item{display:flex;align-items:center;gap:10px;background:white;border:1px solid var(--line);border-radius:13px;padding:10px}.order-item .order-text{flex:1;font-weight:800}.order-controls{display:flex;gap:5px}.mini-btn{border:1px solid #cfe2d4;background:#eff8f1;color:var(--green);border-radius:9px;padding:6px 10px;font-weight:900}
+.drag-tiles{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0}.drag-tile{border:1px solid #cbded0;background:#fff;border-radius:13px;padding:10px 13px;font-weight:800;cursor:grab}.drag-tile.active{background:#fff1c6;border-color:#d8a52d;box-shadow:0 0 0 2px #f4d77966}.drag-tile.assigned{background:#e8f6ed;border-color:#91cda4}
+.drop-zones{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.drop-zone{border:2px dashed #b9d6c2;background:#f4fbf5;border-radius:16px;padding:13px;min-height:100px}.drop-zone h4{margin:0 0 9px;color:var(--green)}.drop-zone .assigned-list{display:flex;flex-wrap:wrap;gap:6px}.assigned-chip{font-size:.82rem;background:#fff;border:1px solid #cfe3d4;border-radius:99px;padding:6px 9px}
+.complex-list{display:grid;gap:9px}.check-option{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);padding:12px;border-radius:13px;font-weight:800;line-height:1.45}.check-option input{margin-top:4px;accent-color:var(--green);width:18px;height:18px;flex-shrink:0}
+.level{font-size:.75rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;padding:6px 10px;border-radius:99px;display:inline-block}.level-1{background:#e3f5e8;color:#146644}.level-2{background:#fff0c6;color:#86610c}.level-3{background:#eee4ff;color:#65459b}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}.stat-card{padding:17px;border:1px solid var(--line);background:#fbfefb;border-radius:17px}.stat-card strong{font-size:1.65rem;color:var(--green);display:block}.stat-card span{font-size:.85rem;color:var(--muted);font-weight:800}
+.report-sheet{background:#fff;border:1px solid #e1e9e1;border-radius:18px;padding:clamp(18px,3vw,30px);color:#263f35}
+.report-header{display:flex;gap:15px;align-items:center;border-bottom:2px solid var(--gold);padding-bottom:16px;margin-bottom:18px}.report-logo{width:56px;height:56px;border-radius:17px;background:var(--green);color:#fff;display:grid;place-items:center;font-size:28px;flex-shrink:0}.report-header h2{margin:0;color:var(--green)}.report-header p{margin:4px 0 0;color:#60766b;font-size:.9rem}
+.report-table{width:100%;border-collapse:collapse;margin:12px 0 18px}.report-table th,.report-table td{border:1px solid #dce8df;padding:10px;text-align:left;vertical-align:top}.report-table th{background:#eef8f0;color:#235441}
+.modal-backdrop{position:fixed;inset:0;background:#0a3027a8;backdrop-filter:blur(8px);z-index:80;display:none;align-items:center;justify-content:center;padding:18px}
+.modal-backdrop.show{display:flex;animation:appear .2s ease}
+.modal-card{position:relative;background:#fffdf7;border:1px solid #fff;border-radius:26px;padding:clamp(22px,4vw,34px);max-width:600px;width:100%;max-height:88vh;overflow:auto;box-shadow:0 25px 80px #001d1455}
+.modal-card h2{color:var(--green);margin:0 0 15px}.modal-close{position:absolute;right:14px;top:12px;border:0;background:#edf6ef;border-radius:50%;width:38px;height:38px;font-size:1.2rem;color:var(--green);font-weight:900}
+.developer-card{text-align:center}.avatar{width:112px;height:112px;border-radius:50%;object-fit:cover;border:5px solid #f3d77e;box-shadow:0 8px 25px #124d3822;margin:10px auto 15px;display:block;background:#e8f6ec}.developer-details{display:grid;gap:8px;color:#4d695c}.developer-details strong{color:#1e4b39}
+.small-note{font-size:.88rem;color:var(--muted);line-height:1.6}
+.footer-note{text-align:center;color:#698076;font-size:.8rem;margin:22px 0 0}
+
+.cover-ribbon{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:999px;background:#fff2c9;border:1px solid #f0d77e;color:#785b0d;font-weight:900;font-size:.78rem;letter-spacing:.04em}
+.cover-subtitle{font-size:clamp(1.02rem,2vw,1.25rem);line-height:1.65;color:#426358;max-width:580px;margin:0 0 18px;font-weight:700}
+.cover-competency{font-size:.9rem;color:#648075;line-height:1.55;margin:0;max-width:560px}
+.menu-card.feature-card{background:linear-gradient(145deg,#fff,#f1fbf3);border-color:#cfe5d4}
+.menu-card.feature-card .menu-emoji{animation:bob 2.4s ease-in-out infinite;transform-origin:center}
+.menu-card .menu-emoji{display:inline-block;width:max-content}
+.extra-screen .panel{margin-bottom:18px}
+.extra-title{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.extra-title .big-icon{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:#e9f7ed;font-size:2rem;flex-shrink:0;animation:bob 2.4s ease-in-out infinite}
+.resource-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+.resource-card{border:1px solid #dce9df;background:linear-gradient(145deg,#fff,#f8fcf8);border-radius:19px;padding:18px;display:flex;flex-direction:column;gap:9px;min-width:0}
+.resource-card h3{margin:0;color:var(--green);font-size:1.05rem;line-height:1.4}
+.resource-card p{margin:0;color:#60776b;line-height:1.6;font-size:.92rem;flex:1}
+.resource-card .btn{align-self:flex-start;text-decoration:none}
+.resource-meta{font-size:.75rem;font-weight:900;color:#9a7417;text-transform:uppercase;letter-spacing:.06em}
+.motivation-wrap{max-width:800px;margin:4vh auto;text-align:center}
+.motivation-stars{font-size:2.1rem;letter-spacing:.35em;animation:twinkle 1.8s ease-in-out infinite alternate}
+@keyframes twinkle{from{opacity:.55;transform:scale(.96)}to{opacity:1;transform:scale(1.04)}}
+.quote-card{position:relative;overflow:hidden;background:linear-gradient(135deg,#e8f8ed,#fff4d5);border:2px solid #d5ead9;border-radius:28px;padding:clamp(24px,5vw,48px);margin:18px 0;box-shadow:var(--shadow)}
+.quote-mark{font-size:3rem;color:#d2a32f;line-height:.8}
+.quote-text{font-size:clamp(1.45rem,4vw,2.35rem);font-weight:900;line-height:1.35;color:var(--green);margin:16px auto;max-width:680px}
+.quote-support{color:#62776f;font-weight:800;line-height:1.6}
+.quote-mascot{font-size:3.1rem;display:inline-block;animation:floaty 2.8s ease-in-out infinite}
+.animation-stage{position:relative;overflow:hidden;min-height:320px;border-radius:26px;border:1px solid #d5e9d8;background:linear-gradient(180deg,#dff4ff 0%,#f7ffef 66%,#d8efc9 66%,#d8efc9 100%);display:flex;flex-direction:column;justify-content:space-between;padding:20px;margin:18px 0}
+.scene-sun{position:absolute;right:30px;top:22px;font-size:2.4rem;animation:spin 14s linear infinite}
+.scene-cloud{position:absolute;left:-35px;top:48px;font-size:2.5rem;animation:cloudmove 12s linear infinite}
+@keyframes cloudmove{from{transform:translateX(-10px)}to{transform:translateX(500px)}}
+.scene-characters{display:flex;align-items:flex-end;justify-content:center;gap:clamp(12px,5vw,48px);padding-top:45px;z-index:1;min-height:170px}
+.scene-character{font-size:clamp(3.6rem,9vw,6rem);display:inline-block;filter:drop-shadow(0 7px 2px #4b806a22);animation:characterhop 1.9s ease-in-out infinite}
+.scene-character:nth-child(2){animation-delay:.35s}.scene-character:nth-child(3){animation-delay:.7s}
+@keyframes characterhop{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-15px) rotate(3deg)}}
+.scene-object{display:inline-block;font-size:2.3rem;animation:objectfloat 3s ease-in-out infinite}
+@keyframes objectfloat{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-10px) rotate(8deg)}}
+.scene-caption{position:relative;z-index:2;align-self:center;text-align:center;max-width:700px;background:#ffffffdf;border:1px solid #fff;border-radius:18px;padding:14px 18px;margin-top:18px;color:#315746;box-shadow:0 8px 20px #28543b12}
+.scene-caption h2{margin:0 0 5px;color:var(--green)}.scene-caption p{margin:0;line-height:1.55}
+.animation-tabs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+.animation-tabs .btn{border:1px solid #d5e8d9}
+.animation-tabs .btn.active{background:#075c46;color:#fff;border-color:#075c46}
+.lesson-animation-strip{display:flex;align-items:center;gap:14px;padding:13px 16px;margin:0 0 20px;border-radius:18px;border:1px solid #d6e9db;background:linear-gradient(100deg,#effaf1,#fff8e6);overflow:hidden}
+.lesson-animated-icon{font-size:2.8rem;flex-shrink:0;animation:bob 1.8s ease-in-out infinite}
+.lesson-animation-copy{flex:1;min-width:0}.lesson-animation-copy strong{color:var(--green);font-size:1rem}.lesson-animation-copy p{margin:4px 0 0;color:#5c7568;line-height:1.5;font-size:.9rem}
+.lesson-buddy{font-size:2rem;display:inline-block;animation:floaty 3s ease-in-out infinite}
+.sync-status{font-size:.78rem;padding:4px 10px;border-radius:99px;font-weight:800;display:inline-flex;align-items:center;gap:5px}
+.sync-status.sending{background:#fff3cd;color:#856404}
+.sync-status.success{background:#d4edda;color:#155724}
+.sync-status.error{background:#f8d7da;color:#721c24}
+
+@media(max-width:820px){.resource-grid{grid-template-columns:1fr}.animation-stage{min-height:290px}.scene-cloud{animation-duration:18s}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+@media(max-width:820px){.cover-wrap{grid-template-columns:1fr;gap:20px;padding:10px 0}.cover-copy{padding:8px 2px}.visual-card{min-height:300px;order:-1}.cover-art{max-width:400px}.menu-grid{grid-template-columns:1fr}.menu-card{min-height:auto}.menu-card p{margin-bottom:12px}.summary-grid{grid-template-columns:1fr 1fr}.cover-title{margin-top:16px}.screen{padding:14px}}
+@media(max-width:520px){.cover-actions{display:grid;grid-template-columns:1fr}.cover-actions .btn{width:100%}.visual-card{min-height:245px;border-radius:25px}.cover-title{font-size:2.35rem}.panel{border-radius:20px}.match-row{grid-template-columns:1fr}.drop-zones{grid-template-columns:1fr}.summary-grid{grid-template-columns:1fr}.topline{align-items:flex-start}.student-chip{font-size:.8rem}.report-header{align-items:flex-start}.report-logo{width:45px;height:45px}}
+@media(orientation:landscape) and (max-height:600px){.cover-wrap{min-height:auto;grid-template-columns:1fr 1fr;gap:18px}.visual-card{min-height:300px}.cover-title{font-size:clamp(2rem,5vh,3.4rem)}.screen{padding:14px}.center-panel,.guide-layout{margin:1vh auto}}
+@media print{body{background:#fff!important}.screen,.splash,.modal-backdrop{display:none!important}body.printing #reportScreen{display:block!important;padding:0!important}body.printing #reportScreen>*:not(.container){display:none!important}body.printing #reportPrint,body.printing #reportPrint *{visibility:visible!important}body.printing #reportPrint{position:absolute;left:0;top:0;width:100%;border:0;box-shadow:none;padding:0}.no-print{display:none!important}.report-sheet{border:0!important;box-shadow:none!important}}
+</style>
+</head>
+<body>
+<div id="splash" class="splash" aria-label="Memuat media pembelajaran">
+  <div><div class="splash-mark">✿</div><h1>Identitas Diriku</h1><p>Belajar mengenal diri, menghargai sesama</p></div>
+</div>
+
+<section id="coverScreen" class="screen active">
+  <div class="cover-wrap">
+    <div class="cover-copy">
+      <div class="cover-ribbon">🌟 MEDIA PEMBELAJARAN INTERAKTIF</div>
+      <h1 class="cover-title">Aku dan <span>Identitasku!</span></h1>
+      <p class="cover-subtitle">Ayo mengenal diri, hobi, dan bahasa. Kita belajar percaya diri sambil menghargai teman!</p>
+      <div class="badges"><span class="badge">Pendidikan Pancasila</span><span class="badge">Kelas I · Fase A</span><span class="badge">Madrasah Ibtidaiyah</span></div>
+      <p class="cover-competency">Materi: mengenal identitas diri sesuai jenis kelamin, hobi, dan bahasa.</p>
+      <div class="cover-actions">
+        <button class="btn btn-light" onclick="openModal('developer')">ⓘ Informasi Pengembang</button>
+        <button class="btn btn-light" onclick="openModal('goals')">◎ Tujuan Pembelajaran</button>
+        <button class="btn btn-primary" onclick="showScreen('identityScreen')">MULAI <span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+    <div class="visual-card" aria-label="Ilustrasi anak-anak yang beragam">
+      <svg class="cover-art" viewBox="0 0 520 420" role="img" aria-label="Ilustrasi anak-anak dengan hobi membaca, bermain bola, dan melukis">
+        <defs><linearGradient id="sun" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe9a8"/><stop offset="1" stop-color="#eabf4d"/></linearGradient><linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#25a777"/><stop offset="1" stop-color="#087153"/></linearGradient></defs>
+        <circle cx="260" cy="190" r="155" fill="#ffffff80"/><circle cx="260" cy="190" r="128" fill="url(#sun)" opacity=".62"/>
+        <path d="M72 318 Q260 365 448 318" fill="none" stroke="#b5d9bc" stroke-width="4" stroke-linecap="round"/>
+        <g transform="translate(88 115)">
+          <ellipse cx="62" cy="205" rx="47" ry="10" fill="#8fc7a0" opacity=".55"/>
+          <path d="M29 108 Q62 87 94 108 L106 177 L87 183 L77 133 L72 190 L47 190 L45 135 L35 181 L16 175Z" fill="#f28b69"/>
+          <path d="M40 187 L67 187 L66 226 L43 226Z" fill="#294c83"/><path d="M70 187 L89 187 L97 226 L76 226Z" fill="#294c83"/>
+          <path d="M39 226 L62 226 L61 234 L31 234 Q29 229 39 226Z" fill="#69452e"/><path d="M77 226 L98 226 L105 234 L76 234Z" fill="#69452e"/>
+          <circle cx="61" cy="65" r="34" fill="#b9764d"/><path d="M27 63 Q20 28 57 25 Q88 22 96 51 L90 65 Q78 42 55 44 Q40 46 27 63Z" fill="#3d2b27"/>
+          <circle cx="49" cy="67" r="3" fill="#263b34"/><circle cx="73" cy="67" r="3" fill="#263b34"/><path d="M51 81 Q62 89 73 80" fill="none" stroke="#713b31" stroke-width="3" stroke-linecap="round"/>
+          <path d="M34 110 L15 143 L25 150 L45 127 M92 110 L112 137 L104 145 L83 128" fill="none" stroke="#b9764d" stroke-width="12" stroke-linecap="round"/>
+          <g transform="translate(4 139) rotate(-8)"><rect width="40" height="29" rx="3" fill="#fff7d9" stroke="#e6b94f" stroke-width="3"/><path d="M6 8 H34 M6 14 H29 M6 20 H32" stroke="#6d9c79" stroke-width="2"/></g>
+        </g>
+        <g transform="translate(204 78)">
+          <ellipse cx="66" cy="245" rx="48" ry="10" fill="#8fc7a0" opacity=".55"/>
+          <path d="M36 113 Q66 95 95 113 L104 184 L83 190 L76 143 L75 199 L48 199 L47 143 L40 190 L20 184Z" fill="url(#shirt)"/>
+          <path d="M48 195 L73 195 L70 234 L44 234Z" fill="#f1c95c"/><path d="M74 195 L91 192 L99 234 L78 234Z" fill="#f1c95c"/>
+          <path d="M43 234 L69 234 L68 243 L36 243Z" fill="#254a39"/><path d="M78 234 L101 234 L108 243 L78 243Z" fill="#254a39"/>
+          <circle cx="65" cy="70" r="35" fill="#8e573a"/><path d="M29 67 Q25 28 63 27 Q99 27 101 63 L93 76 Q88 46 65 46 Q42 46 35 77Z" fill="#262521"/>
+          <circle cx="53" cy="70" r="3" fill="#263b34"/><circle cx="77" cy="70" r="3" fill="#263b34"/><path d="M54 84 Q65 91 77 83" fill="none" stroke="#63382d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M37 116 L16 145 L25 152 L48 130 M94 116 L113 145 L104 153 L83 131" fill="none" stroke="#8e573a" stroke-width="12" stroke-linecap="round"/>
+          <g transform="translate(105 151)"><circle r="22" fill="#fff" stroke="#d4e5d8" stroke-width="2"/><path d="M-7 -11 L5 -14 L13 -3 L7 10 L-6 10 L-13 -1Z" fill="#263b34"/><path d="M-7 -11 L-17 -16 M5 -14 L9 -23 M13 -3 L23 -5 M7 10 L14 19 M-6 10 L-14 18 M-13 -1 L-23 1" stroke="#263b34" stroke-width="4" stroke-linecap="round"/></g>
+        </g>
+        <g transform="translate(365 126)">
+          <ellipse cx="46" cy="194" rx="40" ry="9" fill="#8fc7a0" opacity=".55"/>
+          <path d="M21 102 Q45 87 70 103 L83 166 L64 174 L58 130 L58 181 L37 181 L34 130 L28 173 L10 167Z" fill="#8b78d6"/>
+          <path d="M36 179 L56 179 L55 214 L35 214Z" fill="#e8a74c"/><path d="M57 179 L72 176 L78 214 L60 214Z" fill="#e8a74c"/>
+          <path d="M34 214 L56 214 L56 222 L28 222Z" fill="#6b4c37"/><path d="M61 214 L79 214 L86 222 L61 222Z" fill="#6b4c37"/>
+          <circle cx="46" cy="61" r="31" fill="#d59a70"/><path d="M15 61 Q9 28 42 27 Q75 23 78 57 L72 69 Q65 43 45 43 Q28 43 20 69Z" fill="#4c3328"/>
+          <circle cx="36" cy="63" r="3" fill="#263b34"/><circle cx="57" cy="63" r="3" fill="#263b34"/><path d="M36 76 Q46 84 57 76" fill="none" stroke="#884b3c" stroke-width="3" stroke-linecap="round"/>
+          <path d="M22 104 L4 133 L12 140 L33 119 M69 104 L91 130 L82 139 L63 120" fill="none" stroke="#d59a70" stroke-width="11" stroke-linecap="round"/>
+          <g transform="translate(74 126) rotate(8)"><rect width="33" height="38" rx="4" fill="#fff" stroke="#e6b94f" stroke-width="3"/><path d="M8 28 L15 11 L22 22 L27 14" fill="none" stroke="#0a805d" stroke-width="3"/><circle cx="8" cy="8" r="3" fill="#f28b69"/><circle cx="23" cy="7" r="3" fill="#8b78d6"/></g>
+        </g>
+        <g font-size="29"><text x="56" y="82">✦</text><text x="420" y="82">♡</text><text x="420" y="290">✿</text><text x="116" y="342">♫</text></g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="identityScreen" class="screen">
+  <div class="container"><div class="topline"><div class="brand-mini"><span class="brand-icon">✿</span><span>Identitas Diriku</span></div><button class="btn btn-light" onclick="showScreen('coverScreen')">← Kembali ke Cover</button></div>
+    <div class="panel center-panel">
+      <div class="eyebrow">Langkah 1 · Kenalan dulu</div><h1>Siapa nama hebatmu?</h1><p class="small-note">Isi data diri agar laporan belajarmu memiliki identitas yang benar.</p>
+      <form id="identityForm" class="form-grid" novalidate>
+        <label class="field">Nama lengkap siswa<input id="studentName" name="studentName" autocomplete="name" maxlength="80" placeholder="Contoh: Aisyah Putri" required></label>
+        <label class="field">Kelas<input id="studentClass" name="studentClass" maxlength="30" placeholder="Contoh: I-A" required></label>
+        <div id="identityError" class="form-error" role="alert"></div>
+        <button class="btn btn-primary" type="submit">Lanjut ke Pengantar →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section id="guideScreen" class="screen">
+  <div class="container"><div class="topline"><div class="brand-mini"><span class="brand-icon">✿</span><span>Petunjuk Penggunaan</span></div><span class="student-chip" id="guideStudent"></span></div>
+    <div class="panel guide-layout">
+      <div id="guideNumber" class="guide-number">Panduan 1 dari 3</div><div id="guideEmoji" class="guide-illustration">👀</div><h1 id="guideTitle">Amati dan baca</h1><p id="guideText" class="lesson-body"></p>
+      <div class="progress-track"><div id="guideProgress" class="progress-fill" style="width:33%"></div></div>
+      <div class="guide-controls"><button id="guideBack" class="btn btn-light">← Kembali</button><button id="guideNext" class="btn btn-primary">Selanjutnya →</button></div><div id="guideDots" class="dots"></div>
+    </div>
+  </div>
+</section>
+
+<section id="dashboardScreen" class="screen">
+  <div class="container">
+    <div class="topline"><div class="brand-mini"><span class="brand-icon">✿</span><span>Ruang Belajar Ceria</span></div><span id="studentChip" class="student-chip"></span></div>
+    <div class="menu-heading"><div><div class="eyebrow">Pilih petualanganmu</div><h1>Menu Utama</h1><p class="small-note">Selesaikan setiap tahap untuk membuka tahap berikutnya.</p></div><button class="btn btn-light" onclick="showScreen('coverScreen')">Keluar ke Cover</button></div>
+    <div class="menu-grid">
+      <article id="learnCard" class="menu-card"><span id="learnStatus" class="status">🔓 Terbuka</span><div class="menu-emoji">📚</div><h2>BELAJAR</h2><p>Kenali identitas diri, jenis kelamin, hobi, bahasa, dan cara menghargai perbedaan.</p><div class="progress-track"><div id="learnProgress" class="progress-fill" style="width:0%"></div></div><button class="btn btn-primary" onclick="openMenu('learn')">Mulai Belajar →</button></article>
+      <article id="gameCard" class="menu-card locked"><span id="gameStatus" class="status locked">🔒 Terkunci</span><div class="menu-emoji">🎮</div><h2>BERMAIN</h2><p>Ikuti 10 tantangan seru: menjodohkan, mengurutkan, memilih, dan memindahkan kartu.</p><div class="progress-track"><div id="gameProgress" class="progress-fill" style="width:0%"></div></div><button id="gameOpenButton" class="btn btn-soft" onclick="openMenu('game')">Lihat Tantangan</button></article>
+      <article id="trainCard" class="menu-card locked"><span id="trainStatus" class="status locked">🔒 Terkunci</span><div class="menu-emoji">🏅</div><h2>BERLATIH</h2><p>Uji pemahaman melalui 10 soal berjenjang dari dasar sampai penalaran.</p><div class="progress-track"><div id="trainProgress" class="progress-fill" style="width:0%"></div></div><button id="trainOpenButton" class="btn btn-soft" onclick="openMenu('train')">Lihat Asesmen</button></article>
+      <article class="menu-card feature-card"><span class="status">✨ Sampul</span><div class="menu-emoji">🎨</div><h2>SAMPUL MEDIA</h2><p>Lihat halaman cover media pembelajaran yang ceria dan penuh warna.</p><button class="btn btn-light" onclick="showScreen('coverScreen')">Lihat Cover →</button></article>
+      <article class="menu-card feature-card"><span class="status">📘 Sumber Resmi</span><div class="menu-emoji">📚</div><h2>BUKU PANDUAN</h2><p>Buka buku siswa, panduan guru, dan panduan mata pelajaran dari Kemendikdasmen.</p><button class="btn btn-light" onclick="showScreen('resourcesScreen')">Buka Panduan →</button></article>
+      <article class="menu-card feature-card"><span class="status">💛 Penyemangat</span><div class="menu-emoji">🌟</div><h2>MOTIVASI BELAJAR</h2><p>Baca kata-kata penyemangat agar makin berani mencoba dan rajin belajar.</p><button class="btn btn-light" onclick="openMotivation()">Semangati Aku →</button></article>
+      <article class="menu-card feature-card"><span class="status">🎞️ Animasi</span><div class="menu-emoji">🧒🏻</div><h2>ANIMASI MATERI</h2><p>Lihat gambar bergerak tentang identitas, hobi, bahasa, dan menghargai teman.</p><button class="btn btn-light" onclick="openAnimation('identity')">Lihat Animasi →</button></article>
+    </div>
+    <p class="footer-note">Belajar dengan gembira • Berani menjadi diri sendiri • Hormati semua teman</p>
+  </div>
+</section>
+
+<section id="resourcesScreen" class="screen extra-screen">
+  <div class="container">
+    <div class="topline"><div class="brand-mini"><span class="brand-icon">📘</span><span>Buku Panduan Resmi</span></div><button class="btn btn-light" onclick="showScreen('dashboardScreen')">☰ Menu Utama</button></div>
+    <article class="panel">
+      <div class="extra-title"><span class="big-icon">📚</span><div><h1 style="margin:0;color:var(--green)">Buku Panduan Pendidikan Pancasila</h1><p class="small-note" style="margin:5px 0 0">Sumber resmi Kemendikdasmen untuk guru dan murid SD/MI kelas I.</p></div></div>
+      <p class="lesson-body">Pilih sumber yang ingin dibuka. Tautan akan membawa Bapak/Ibu atau guru ke situs resmi. Ketersediaan unduhan mengikuti aturan pada situs sumber.</p>
+      <div class="resource-grid">
+        <div class="resource-card"><span class="resource-meta">Pusat Perbukuan · SIBI</span><h3>Panduan Guru Pendidikan Pancasila untuk SD/MI Kelas I</h3><p>Referensi guru untuk merancang dan melaksanakan pembelajaran Pendidikan Pancasila kelas I.</p><a class="btn btn-primary" href="https://buku.kemendikdasmen.go.id/katalog/panduan-guru-pendidikan-pancasila-untuk-sdmi-kelas-i" target="_blank" rel="noopener noreferrer">Buka Panduan Guru ↗</a></div>
+        <div class="resource-card"><span class="resource-meta">Pusat Perbukuan · SIBI</span><h3>Pendidikan Pancasila untuk SD/MI Kelas I</h3><p>Buku siswa resmi untuk mendampingi kegiatan belajar dan mengenal nilai Pancasila dalam keseharian.</p><a class="btn btn-primary" href="https://buku.kemendikdasmen.go.id/katalog/pendidikan-pancasila-untuk-sdmi-kelas-i" target="_blank" rel="noopener noreferrer">Buka Buku Siswa ↗</a></div>
+        <div class="resource-card"><span class="resource-meta">Panduan Mata Pelajaran</span><h3>Panduan Mata Pelajaran Pendidikan Pancasila Fase A–F</h3><p>Dokumen panduan mata pelajaran untuk membantu guru menghubungkan capaian pembelajaran dengan kegiatan di kelas.</p><a class="btn btn-primary" href="https://kurikulum.kemendikdasmen.go.id/file/panduan/dokumen/2.%20Final%20Panduan%20Mata%20Pelajaran%20Pendidikan%20Pancasila_12_09_2025_Revisi%203.pdf" target="_blank" rel="noopener noreferrer">Buka Dokumen PDF ↗</a></div>
+        <div class="resource-card"><span class="resource-meta">Sistem Informasi Kurikulum Nasional</span><h3>Daftar Panduan Mata Pelajaran</h3><p>Gunakan halaman ini untuk mencari panduan mata pelajaran resmi lainnya dari Kemendikdasmen.</p><a class="btn btn-light" href="https://kurikulum.kemendikdasmen.go.id/panduan-mapel" target="_blank" rel="noopener noreferrer">Jelajahi Panduan ↗</a></div>
+      </div>
+      <div class="kbc-box"><div class="box-label">💡 Catatan</div>Media ini merupakan bahan bantu belajar. Gunakan buku dan panduan resmi bersama arahan guru, serta sesuaikan kegiatan dengan kebutuhan murid di madrasah.</div>
+    </article>
+  </div>
+</section>
+
+<section id="motivationScreen" class="screen extra-screen">
+  <div class="container">
+    <div class="topline"><div class="brand-mini"><span class="brand-icon">🌟</span><span>Motivasi Belajar</span></div><button class="btn btn-light" onclick="showScreen('dashboardScreen')">☰ Menu Utama</button></div>
+    <div class="panel motivation-wrap">
+      <div class="eyebrow">Kamu pasti bisa!</div><div class="motivation-stars" aria-hidden="true">✦ ✧ ✦</div>
+      <div class="quote-card"><div class="quote-mascot" id="quoteMascot" aria-hidden="true">🌈</div><div class="quote-mark">“</div><p id="motivationQuote" class="quote-text" aria-live="polite">Aku berani mencoba. Kalau salah, aku belajar lagi!</p><p id="motivationSupport" class="quote-support">Setiap usaha membuatku semakin hebat.</p></div>
+      <div class="cover-actions" style="justify-content:center"><button class="btn btn-gold" onclick="nextMotivation()">Kata Penyemangat Lain ✨</button><button class="btn btn-primary" onclick="showScreen('dashboardScreen')">Aku Siap Belajar! →</button></div>
+      <p class="small-note">Ingat, tidak apa-apa jika belum bisa. Berlatih sedikit demi sedikit adalah bagian dari belajar.</p>
+    </div>
+  </div>
+</section>
+
+<section id="animationScreen" class="screen extra-screen">
+  <div class="container">
+    <div class="topline"><div class="brand-mini"><span class="brand-icon">🎞️</span><span>Animasi Materi</span></div><button class="btn btn-light" onclick="showScreen('dashboardScreen')">☰ Menu Utama</button></div>
+    <article class="panel">
+      <div class="extra-title"><span class="big-icon">🧒🏻</span><div><h1 style="margin:0;color:var(--green)">Ayo Lihat dan Amati!</h1><p class="small-note" style="margin:5px 0 0">Pilih tema. Gambar dan benda akan bergerak untuk membantu kamu memahami materi.</p></div></div>
+      <div class="animation-tabs" role="group" aria-label="Pilih tema animasi">
+        <button class="btn btn-light active" data-scene="identity" onclick="openAnimation('identity')">🪪 Identitas</button>
+        <button class="btn btn-light" data-scene="hobby" onclick="openAnimation('hobby')">⚽ Hobi</button>
+        <button class="btn btn-light" data-scene="language" onclick="openAnimation('language')">💬 Bahasa</button>
+        <button class="btn btn-light" data-scene="respect" onclick="openAnimation('respect')">🤝 Menghargai</button>
+      </div>
+      <div class="animation-stage" aria-live="polite">
+        <span class="scene-sun" aria-hidden="true">☀️</span><span class="scene-cloud" aria-hidden="true">☁️</span>
+        <div class="scene-characters"><span id="sceneCharacter1" class="scene-character" aria-hidden="true">👧🏻</span><span id="sceneCharacter2" class="scene-character" aria-hidden="true">👦🏽</span><span id="sceneCharacter3" class="scene-character" aria-hidden="true">👧🏽</span></div>
+        <div class="scene-caption"><h2 id="sceneTitle">Aku punya identitas</h2><p id="sceneText">Setiap anak punya nama, ciri diri, dan cerita masing-masing.</p><div id="sceneObjects" class="scene-object" aria-hidden="true">🪪 📛 ✨</div></div>
+      </div>
+      <p class="small-note">Gambar bergerak dibuat dengan animasi CSS agar tetap ringan dan dapat berjalan langsung dari file HTML. Tidak perlu memasang aplikasi tambahan.</p>
+    </article>
+  </div>
+</section>
+
+<section id="learnScreen" class="screen">
+  <div class="container">
+    <div class="topline"><div class="brand-mini"><span class="brand-icon">📚</span><span>Menu Belajar</span></div><button class="btn btn-light" onclick="showScreen('dashboardScreen')">☰ Menu Utama</button></div>
+    <div class="content-head"><h1 id="learnTitle">Aku Punya Identitas</h1><span id="learnCounter" class="counter">Slide 1 dari 6</span></div>
+    <div class="progress-track"><div id="learnBar" class="progress-fill" style="width:16.6%"></div></div>
+    <article class="panel"><div id="learnContent"></div></article>
+    <div class="nav-actions"><button id="learnPrev" class="btn btn-light">← Sebelumnya</button><button id="learnNext" class="btn btn-primary" disabled>Selanjutnya →</button></div>
+  </div>
+</section>
+
+<section id="gameScreen" class="screen">
+  <div class="container">
+    <div class="topline"><div class="brand-mini"><span class="brand-icon">🎮</span><span>Menu Bermain</span></div><button class="btn btn-light" onclick="showScreen('dashboardScreen')">☰ Menu Utama</button></div>
+    <div class="content-head"><h1>Petualangan Kenali Diri</h1><span id="gameCounter" class="counter">Tantangan 1 dari 10</span></div>
+    <div class="progress-track"><div id="gameBar" class="progress-fill" style="width:10%"></div></div>
+    <article class="panel"><div id="gameBody"></div><div id="gameFeedback" class="feedback" role="status"></div></article>
+    <div class="nav-actions"><button id="gamePrev" class="btn btn-light">← Sebelumnya</button><div><button id="gameCheck" class="btn btn-gold">Periksa Jawaban ✓</button> <button id="gameNext" class="btn btn-primary" disabled>Berikutnya →</button></div></div>
+  </div>
+</section>
+
+<section id="trainScreen" class="screen">
+  <div class="container">
+    <div class="topline"><div class="brand-mini"><span class="brand-icon">🏅</span><span>Menu Berlatih</span></div><button class="btn btn-light" onclick="showScreen('dashboardScreen')">☰ Menu Utama</button></div>
+    <div class="content-head"><h1>Asesmen Pemahaman</h1><span id="trainCounter" class="counter">Soal 1 dari 10</span></div>
+    <div class="progress-track"><div id="trainBar" class="progress-fill" style="width:10%"></div></div>
+    <article class="panel"><div id="trainBody"></div><div id="trainFeedback" class="feedback" role="status"></div></article>
+    <div class="nav-actions"><span id="trainHint" class="small-note">Pilih satu jawaban terbaik.</span><button id="trainSubmit" class="btn btn-gold">Kunci Jawaban ✓</button><button id="trainNext" class="btn btn-primary" disabled>Soal Berikutnya →</button></div>
+  </div>
+</section>
+
+<section id="reportScreen" class="screen">
+  <div class="container">
+    <div class="topline no-print"><div class="brand-mini"><span class="brand-icon">🏅</span><span>Laporan Hasil Belajar</span></div><button class="btn btn-light" onclick="showScreen('dashboardScreen')">← Menu Utama</button></div>
+    <div id="syncBox" style="margin-bottom:12px;" class="no-print"></div>
+    <div id="reportPrint" class="report-sheet"></div>
+    <div class="nav-actions no-print"><button class="btn btn-light" onclick="showScreen('dashboardScreen')">Kembali ke Menu</button><button class="btn btn-primary" onclick="downloadReport()">⬇ Unduh / Cetak Laporan PDF</button></div>
+    <p class="footer-note no-print">Jika fitur unduh otomatis tidak tersedia saat offline, gunakan pilihan “Simpan sebagai PDF” pada jendela cetak.</p>
+  </div>
+</section>
+
+<div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle" onclick="if(event.target===this)closeModal()">
+  <div class="modal-card"><button class="modal-close" aria-label="Tutup" onclick="closeModal()">×</button><div id="modalContent"></div></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+<script>
+"use strict";
+
+// =========================================================================
+// KONFIGURASI GOOGLE APPS SCRIPT
+// Ganti tautan dibawah ini dengan URL Web App Google Apps Script Anda
+// =========================================================================
+const GAS_URL = "URL_GAS_ANDA_DISINI";
+
+const DEVELOPER = {name:"Lisna Habibie, M.Pd",school:"Min 1 Kota Gorontalo",email:"lisnahabibie6@gmail.com",photo:"https://iili.io/CSAHRQ1.png"};
+const verses = {
+  hujurat: {
+    arabic:"يٰٓاَيُّهَا النَّاسُ اِنَّا خَلَقْنٰكُمْ مِّنْ ذَكَرٍ وَّاُنْثٰى وَجَعَلْنٰكُمْ شُعُوْبًا وَّقَبَاۤىِٕلَ لِتَعَارَفُوْا ۚ اِنَّ اَكْرَمَكُمْ عِنْدَ اللّٰهِ اَتْقٰىكُمْ ۗ اِنَّ اللّٰهَ عَلِيْمٌ خَبِيْرٌ",
+    reference:"QS. Al-Ḥujurāt [49]: 13",
+    translation:"Wahai manusia, sesungguhnya Kami telah menciptakan kamu dari seorang laki-laki dan perempuan. Kemudian, Kami menjadikan kamu berbangsa-bangsa dan bersuku-suku agar kamu saling mengenal. Sesungguhnya yang paling mulia di antara kamu di sisi Allah adalah orang yang paling bertakwa. Sesungguhnya Allah Maha Mengetahui lagi Maha Teliti.",
+    correlation:"Ayat ini mengajarkan kita untuk saling mengenal dan menghargai perbedaan. Nama, kebiasaan, bahasa, dan latar keluarga teman dapat berbeda, tetapi semua harus diperlakukan dengan baik."
+  },
+  rum: {
+    arabic:"وَمِنْ اٰيٰتِهٖ خَلْقُ السَّمٰوٰتِ وَالْاَرْضِ وَاخْتِلَافُ اَلْسِنَتِكُمْ وَاَلْوَانِكُمْ ۗ اِنَّ فِيْ ذٰلِكَ لَاٰيٰتٍ لِّلْعٰلِمِيْنَ",
+    reference:"QS. Ar-Rūm [30]: 22",
+    translation:"Di antara tanda-tanda (kebesaran)-Nya ialah penciptaan langit dan bumi, perbedaan bahasa dan warna kulitmu. Sesungguhnya pada yang demikian itu benar-benar terdapat tanda-tanda (kebesaran Allah) bagi orang-orang yang mengetahui.",
+    correlation:"Bahasa dan ciri diri yang beragam adalah bagian dari tanda kebesaran Allah. Kita dapat menggunakan bahasa Indonesia, bahasa Gorontalo, atau bahasa daerah lain dengan sopan."
+  }
+};
+const learnSlides = [
+ {title:"Aku Punya Identitas",body:"Identitas diri adalah hal-hal yang membantu kita mengenal siapa diri kita. Contohnya nama, kelas, keluarga, jenis kelamin, bahasa yang digunakan, dan hobi. Nama membantu orang memanggil kita dengan benar. Kelas menunjukkan tempat kita belajar. Hobi adalah kegiatan yang kita sukai. Setiap anak memiliki cerita dan kelebihan masing-masing. Kita boleh merasa bangga terhadap diri sendiri tanpa merasa lebih hebat daripada teman. Saat berkenalan, sebutkan nama dengan jelas dan dengarkan nama teman sampai selesai.",local:"Di Gorontalo, anak-anak yang tinggal dekat Teluk Tomini, sekitar Danau Limboto, atau di dataran pertanian bisa memiliki kegiatan sehari-hari yang berbeda. Ada yang membantu menyiram tanaman, membaca buku, bermain bola, atau mengamati ikan. Lingkungan boleh berbeda, tetapi setiap anak sama-sama berharga.",kbc:"Cinta kepada Allah berarti bersyukur atas diri yang Allah ciptakan. Cinta kepada sesama berarti menyebut nama teman dengan benar, tidak mengejek, dan memberi kesempatan semua orang untuk bercerita.",verse:"hujurat",q:"Manakah contoh identitas diri?",options:["Nama dan kelas","Warna meja saja","Nomor sepatu teman"],answer:0,explain:"Benar! Nama dan kelas membantu kita mengenali diri."},
+ {title:"Mengenal Jenis Kelamin dengan Santun",body:"Kita dapat mengenali jenis kelamin diri sebagai laki-laki atau perempuan. Mengenal diri bukan alasan untuk mengejek atau membatasi teman. Anak laki-laki dan anak perempuan sama-sama boleh belajar, bertanya, membaca, menggambar, membantu keluarga, dan menjaga lingkungan. Setiap anak perlu menjaga tubuhnya, berpakaian pantas sesuai aturan keluarga dan sekolah, serta memberi tahu orang dewasa tepercaya jika merasa tidak aman. Kita tidak boleh menyentuh tubuh teman tanpa izin. Sikap baik, keberanian, dan kepandaian tidak hanya dimiliki satu jenis kelamin.",local:"Di sekolah dan kampung-kampung Gorontalo, anak-anak dapat bekerja sama saat membersihkan halaman, menanam bunga, atau belajar tentang Danau Limboto. Tugas dibagi dengan adil sesuai kemampuan dan keselamatan, bukan hanya karena seseorang laki-laki atau perempuan.",kbc:"Cinta kepada Allah dan sesama tampak saat kita menjaga kehormatan diri, menghormati batas tubuh, tidak merendahkan teman, dan membantu semua teman belajar dengan aman.",verse:"hujurat",q:"Sikap yang tepat kepada teman laki-laki maupun perempuan adalah ...",options:["Menghormati dan bekerja sama","Melarang teman ikut belajar","Mengejek hobi teman"],answer:0,explain:"Betul. Semua teman berhak dihormati dan belajar dengan aman."},
+ {title:"Hobiku, Kegemaranku",body:"Hobi adalah kegiatan yang senang kita lakukan pada waktu luang. Ada anak yang suka membaca, menyanyi, bermain bola, menari, berkebun, menggambar, atau merapikan koleksi batu. Hobi dapat membantu kita belajar keterampilan baru. Kita boleh mempunyai hobi yang sama atau berbeda dengan teman. Jika belum tahu hobi yang disukai, cobalah kegiatan yang aman bersama keluarga atau guru. Hobi harus dilakukan dengan memperhatikan waktu belajar, istirahat, kesehatan, dan keselamatan. Kita juga tidak boleh memaksa teman menyukai kegiatan yang sama.",local:"Anak-anak di wilayah pesisir Teluk Tomini mungkin suka mengamati perahu dan menggambar ikan. Anak-anak dekat Danau Limboto bisa mengamati burung dari tempat aman. Di daerah pertanian, berkebun bersama keluarga dapat menjadi kegiatan menyenangkan.",kbc:"Cinta alam dapat dilakukan lewat hobi: menyiram tanaman, menggambar keindahan kampung, atau mengumpulkan sampah saat bermain. Hargai karya teman dan ucapkan pujian yang tulus.",verse:"hujurat",q:"Jika teman memiliki hobi berbeda, sebaiknya kita ...",options:["Menghargai hobinya","Menertawakannya","Memaksanya mengikuti hobi kita"],answer:0,explain:"Ya! Hobi boleh berbeda, dan kita tetap bisa berteman."},
+ {title:"Bahasa untuk Berkenalan",body:"Bahasa membantu kita menyampaikan pikiran, perasaan, dan kebutuhan. Kita dapat menggunakan bahasa Indonesia saat belajar bersama di kelas. Di rumah atau lingkungan sekitar, sebagian keluarga juga menggunakan bahasa daerah, misalnya bahasa Gorontalo. Ada teman yang mungkin memakai bahasa lain. Ketika berbicara, gunakan kata yang sopan, suara yang cukup jelas, dan dengarkan orang lain. Jika belum memahami kata teman, kita dapat bertanya dengan baik. Jangan menertawakan logat atau cara bicara seseorang. Belajar bahasa baru bisa menjadi kesempatan untuk saling mengenal.",local:"Di Gorontalo, bahasa Indonesia dapat membantu murid dari berbagai wilayah belajar bersama. Sapaan dalam bahasa daerah juga dapat menjadi kekayaan budaya. Saat berkunjung ke pesisir, sekitar Danau Limboto, atau desa pertanian, kita tetap menyapa warga dengan ramah.",kbc:"Menghargai bahasa berarti menghargai orang yang menggunakannya. Kita dapat mencintai budaya daerah sekaligus menggunakan bahasa Indonesia untuk berkomunikasi dengan banyak teman.",verse:"rum",q:"Saat belum memahami bahasa teman, tindakan yang baik adalah ...",options:["Bertanya dengan sopan","Menertawakan cara bicaranya","Berpura-pura mendengar"],answer:0,explain:"Benar. Bertanya dengan sopan membantu kita saling memahami."},
+ {title:"Berbeda Itu Wajar",body:"Setiap orang memiliki persamaan dan perbedaan. Kita mungkin sama-sama murid kelas satu, tetapi nama, bahasa, warna kesukaan, makanan favorit, atau hobi kita bisa berbeda. Perbedaan bukan alasan untuk mengucilkan seseorang. Saat bermain, buat aturan yang adil dan ajak teman bergantian. Jika ada teman yang belum lancar membaca atau berbicara, beri waktu dan bantuan tanpa mengejek. Jika terjadi perselisihan, berhenti sejenak, dengarkan kedua pihak, lalu minta bantuan guru bila perlu. Teman yang baik membuat semua orang merasa aman.",local:"Murid di Gorontalo bisa tinggal di kawasan pesisir, sekitar danau, atau di wilayah pertanian. Pengalaman mereka mungkin berbeda, tetapi saat bertemu di sekolah, mereka dapat belajar, bermain, dan merawat kelas bersama.",kbc:"Kurikulum Berbasis Cinta mengajak kita mencintai Allah, Rasul, sesama manusia, alam, dan tanah air. Cinta tampak dalam tindakan kecil: menyapa, berbagi giliran, tidak membully, dan menjaga kebersihan.",verse:"hujurat",q:"Teman baru berbicara dengan logat berbeda. Apa yang sebaiknya kamu lakukan?",options:["Mendengarkan dan menyapanya ramah","Menirukan logatnya untuk mengejek","Tidak mengizinkannya bermain"],answer:0,explain:"Tepat. Dengarkan dengan ramah dan perlakukan teman dengan hormat."},
+ {title:"Aku Bangga dan Bertanggung Jawab",body:"Mengenal identitas membuat kita lebih percaya diri. Percaya diri bukan berarti selalu merasa paling benar. Anak yang percaya diri berani menyebutkan nama, mencoba hal baru, meminta bantuan saat perlu, dan mengakui kesalahan. Kita juga bertanggung jawab terhadap pilihan kita: merapikan alat belajar, menjaga kebersihan, berbicara jujur, dan menyelesaikan tugas. Kita dapat bangga pada keluarga, bahasa, budaya, dan daerah asal sambil tetap menghormati orang lain. Jika melihat teman sedih karena diejek, temani dia dan laporkan kepada guru.",local:"Teluk Tomini, Danau Limboto, dan lahan pertanian adalah bagian dari lingkungan Gorontalo yang perlu dijaga. Anak-anak dapat ikut menjaga dengan membuang sampah pada tempatnya, menghemat air, tidak mengganggu hewan, dan merawat tanaman. Tindakan kecil membantu kampung tetap nyaman.",kbc:"Cinta tanah air dimulai dari menjaga sekolah dan lingkungan sekitar. Bersyukur kepada Allah dapat diwujudkan dengan menggunakan kemampuan untuk berbuat baik kepada manusia dan alam.",verse:"rum",q:"Contoh rasa percaya diri yang disertai tanggung jawab adalah ...",options:["Berani memperkenalkan diri dan menjaga kebersihan","Membanggakan diri sambil merendahkan teman","Meninggalkan sampah setelah bermain"],answer:0,explain:"Benar! Percaya diri berjalan bersama tanggung jawab dan sikap hormat."}
+];
+
+const gameChallenges = [
+ {type:"match",title:"Tantangan 1 · Jodohkan Identitas",stimulus:"Di kelas I, Naila berkata, “Namaku Naila. Aku suka membaca. Di sekolah aku memakai bahasa Indonesia.” Bima suka bermain bola. Mereka mendengarkan saat teman memperkenalkan diri.",question:"Pasangkan bagian diri dengan jawaban yang benar.",pairs:[["Nama","Naila"],["Hobi","Membaca cerita"],["Bahasa di sekolah","Bahasa Indonesia"]],choices:["Bahasa Indonesia","Naila","Membaca cerita","Kelas I-A"],answer:["Naila","Membaca cerita","Bahasa Indonesia"],explain:"Nama, hobi, dan bahasa adalah bagian dari identitas diri."},
+ {type:"order",title:"Tantangan 2 · Urutkan Cara Berkenalan",stimulus:"Ada murid baru di kelas I. Guru mengajak anak-anak menyambutnya. Mereka berlatih menyapa, menyebutkan nama, lalu mendengarkan nama teman.",question:"Urutkan langkah berkenalan dari awal sampai akhir.",items:["Mendengarkan nama teman","Menyebutkan nama sendiri","Menyapa dengan sopan"],answer:["Menyapa dengan sopan","Menyebutkan nama sendiri","Mendengarkan nama teman"],explain:"Mulailah dengan sapaan, sebutkan nama, lalu dengarkan teman."},
+ {type:"drag",title:"Tantangan 3 · Pilah Sikap Baik",stimulus:"Di halaman madrasah, Amina menunjukkan gambar. Rafi memujinya. Sari menyiram tanaman. Mereka tidak mengejek hobi teman dan merapikan alat setelah bermain.",question:"Kelompokkan kartu ke sikap baik atau tidak baik.",categories:[{id:"baik",label:"Sikap baik"},{id:"kurang",label:"Sikap tidak baik"}],tiles:[{text:"Memuji karya teman",category:"baik"},{text:"Mengejek hobi teman",category:"kurang"},{text:"Merapikan pot tanaman",category:"baik"},{text:"Memaksa teman ikut bermain",category:"kurang"}],explain:"Menghargai teman dan menjaga lingkungan adalah sikap baik."},
+ {type:"mcq",title:"Tantangan 4 · Cerita dari Danau Limboto",stimulus:"Maya tinggal dekat Danau Limboto. Ia suka melihat burung dari tempat aman. Dito suka membaca buku. Lani suka bermain bola. Mereka menceritakan hobi masing-masing.",question:"Ada berapa hobi yang berbeda?",options:["2 hobi","3 hobi","4 hobi"],answer:1,explain:"Ada tiga hobi: mengamati burung, membaca, dan bermain bola."},
+ {type:"complex",title:"Tantangan 5 · Pilih Semua Sikap Menghargai",stimulus:"Kelompok kelas I membuat poster tentang Gorontalo. Ada yang menggambar Teluk Tomini, Danau Limboto, dan kebun. Mereka mendengarkan ide teman dan berbicara dengan sopan.",question:"Pilih semua sikap baik kepada teman.",options:["Mendengarkan teman bergiliran","Menertawakan bahasa teman","Meminta penjelasan dengan sopan","Memberi kesempatan semua anggota"],answer:[0,2,3],explain:"Mendengarkan, bertanya sopan, dan memberi giliran menunjukkan penghargaan."},
+ {type:"match",title:"Tantangan 6 · Jodohkan Cerita dan Identitas",stimulus:"Farhan menulis namanya. Putri menulis hobi menari. Iqbal menulis bahwa ia memakai bahasa Indonesia saat belajar. Mereka membuat kartu perkenalan di kelas.",question:"Pasangkan informasi dengan jawaban yang benar.",pairs:[["Nama","Farhan"],["Hobi","Menari"],["Bahasa saat belajar","Bahasa Indonesia"]],choices:["Farhan","Bahasa Indonesia","Menari","Danau Limboto"],answer:["Farhan","Menari","Bahasa Indonesia"],explain:"Setiap informasi menunjukkan bagian identitas atau kesukaan seseorang."},
+ {type:"order",title:"Tantangan 7 · Urutkan Menjaga Diri",stimulus:"Saat bermain, seorang teman mengejek Dini hingga ia sedih. Dini boleh berkata, “Berhenti,” pergi ke tempat aman, lalu bercerita kepada guru.",question:"Urutkan langkah jika teman membuatmu tidak nyaman.",items:["Bercerita kepada guru","Berkata “berhenti” lalu menjauh","Tahu bahwa boleh meminta bantuan"],answer:["Tahu bahwa boleh meminta bantuan","Berkata “berhenti” lalu menjauh","Bercerita kepada guru"],explain:"Ingat kamu boleh meminta bantuan, menjauh dari hal yang membuatmu tidak nyaman, lalu bercerita kepada guru."},
+ {type:"drag",title:"Tantangan 8 · Jaga Alam, Jaga Kampung",stimulus:"Murid kelas I membersihkan halaman madrasah. Mereka membuang sampah ke tempatnya dan menyiram tanaman. Guru mengingatkan agar anak tidak menyentuh benda tajam.",question:"Kelompokkan tindakan yang merawat atau merusak lingkungan.",categories:[{id:"rawat",label:"Merawat lingkungan"},{id:"rusak",label:"Merusak lingkungan"}],tiles:[{text:"Membuang sampah di tempatnya",category:"rawat"},{text:"Membuang plastik ke danau",category:"rusak"},{text:"Menghemat air",category:"rawat"},{text:"Merusak tanaman",category:"rusak"}],explain:"Merawat lingkungan dimulai dari kebiasaan kecil yang aman."},
+ {type:"mcq",title:"Tantangan 9 · Hitung Hobi Teman",stimulus:"Aisyah suka membaca. Beni suka menggambar. Citra suka membaca. Doni suka bermain bola. Mereka menulis hobi di papan kelas.",question:"Ada berapa jenis hobi yang berbeda?",options:["2 jenis","3 jenis","4 jenis"],answer:1,explain:"Jenis hobinya tiga: membaca, menggambar, dan bermain bola."},
+ {type:"complex",title:"Tantangan 10 · Teman yang Beragam",stimulus:"Ada anak yang memakai bahasa Gorontalo di rumah dan ada yang memakai bahasa Indonesia. Mereka saling mendengarkan, bermain bersama, dan menjaga kebersihan kelas.",question:"Pilih semua aturan kelas yang baik.",options:["Tidak mengejek nama atau logat","Mendengarkan teman berbicara","Mengucilkan anak dengan hobi berbeda","Bekerja sama menjaga kelas"],answer:[0,1,3],explain:"Semua anak layak dihormati; pilih tindakan yang aman dan baik."}
+];
+
+const assessment = [
+ {level:1,weight:8,title:"Soal 1 · Mengenali Identitas",stimulus:"Guru meminta murid membuat kartu diri. Rani menulis nama dan kelas pada kartunya. Ia tidak menulis kata sandi atau alamat rumah.",question:"Apa yang sebaiknya Rani tulis pada kartu diri?",options:["Nama dan kelas","Nama teman dan warna meja","Jumlah jendela dan tinggi papan"],answer:0,explain:"Nama dan kelas adalah contoh identitas diri yang sesuai untuk kartu perkenalan."},
+ {level:1,weight:8,title:"Soal 2 · Menghargai Hobi",stimulus:"Raka suka bermain bola. Mita suka membaca cerita. Mereka tetap berteman walau hobinya berbeda.",question:"Apa yang harus dilakukan jika hobi teman berbeda?",options:["Tetap menghargai hobi teman","Memaksa teman ikut hobi kita","Mengejek teman"],answer:0,explain:"Menghargai pilihan teman adalah sikap yang tepat."},
+ {level:1,weight:8,title:"Soal 3 · Bahasa Sehari-hari",stimulus:"Di sekolah, murid memakai bahasa Indonesia. Di rumah, Sinta juga memakai bahasa Gorontalo. Teman baru berbicara dengan logat berbeda.",question:"Jika belum paham ucapan teman, apa yang harus dilakukan?",options:["Bertanya dengan sopan","Menertawakan teman","Tidak mau mendengarkan"],answer:0,explain:"Bertanya sopan membantu komunikasi dan menjaga perasaan teman."},
+ {level:2,weight:10,title:"Soal 4 · Memilih Tindakan",stimulus:"Dua anak ingin memakai satu krayon saat menggambar pantai Teluk Tomini. Guru meminta mereka memakai krayon secara bergiliran.",question:"Dua anak ingin memakai satu krayon. Apa yang harus dilakukan?",options:["Bergiliran menggunakan krayon","Merebut krayon lebih dahulu","Menyembunyikan krayon"],answer:0,explain:"Bergiliran adalah cara adil dan damai untuk menyelesaikan masalah."},
+ {level:2,weight:10,title:"Soal 5 · Membaca Data Hobi",stimulus:"Aulia suka membaca, Bima suka menggambar, Cici suka membaca, dan Danu suka berkebun. Guru menulis hobi mereka di papan.",question:"Berapa anak yang suka membaca?",options:["1 murid","2 murid","3 murid"],answer:1,explain:"Aulia dan Cici memilih membaca, jadi jumlahnya dua murid."},
+ {level:2,weight:10,title:"Soal 6 · Menghargai Perbedaan",stimulus:"Arman suka menggambar bunga. Temannya mengejek karena Arman laki-laki. Guru mengingatkan bahwa anak laki-laki dan perempuan boleh memiliki hobi yang sama atau berbeda.",question:"Apa yang harus dilakukan saat Arman diejek?",options:["Mendukung Arman","Ikut mengejek","Melarang Arman menggambar"],answer:0,explain:"Hobi aman tidak dibatasi oleh jenis kelamin; teman harus saling mendukung."},
+ {level:2,weight:10,title:"Soal 7 · Cinta Lingkungan",stimulus:"Murid menyiram tanaman di halaman madrasah. Mereka melihat pecahan kaca dekat pot. Guru mengingatkan agar mereka tidak menyentuhnya dan segera memanggil guru.",question:"Apa yang harus dilakukan saat melihat pecahan kaca?",options:["Memanggil guru tanpa menyentuhnya","Mengambilnya dengan tangan kosong","Menyembunyikannya di tas"],answer:0,explain:"Benda tajam berbahaya. Jangan menyentuhnya; segera beri tahu guru."},
+ {level:3,weight:12,title:"Soal 8 · Penalaran tentang Perbedaan",stimulus:"Nisa ingin menggambar Danau Limboto. Joko ingin menggambar kebun. Farel ingin menggambar perahu di Teluk Tomini. Mereka harus membuat satu poster bersama.",question:"Bagaimana agar ide semua teman masuk ke poster?",options:["Membagi poster menjadi tiga bagian","Memilih gambar Nisa saja","Tidak mendengarkan ide teman"],answer:0,explain:"Menggabungkan ide dapat menghargai kontribusi dan mencapai tujuan bersama."},
+ {level:3,weight:12,title:"Soal 9 · Menyelesaikan Masalah dengan Bijak",stimulus:"Di kelas, seorang anak meniru logat temannya dan membuatnya sedih. Kamu melihat kejadian itu, tetapi takut ikut diejek.",question:"Apa yang sebaiknya kamu lakukan saat melihat teman diejek?",options:["Beri tahu guru dan temani teman","Diam saja","Ikut mengejek"],answer:0,explain:"Meminta bantuan guru dan mendukung teman adalah langkah aman."},
+ {level:3,weight:12,title:"Soal 10 · Membuat Keputusan Bertanggung Jawab",stimulus:"Kelas membuat gambar tentang diri dan daerah Gorontalo. Seorang murid tidak mau bercerita tentang keluarganya. Ia mau menggambar hobinya.",question:"Apa yang baik dilakukan jika teman tidak mau bercerita tentang keluarganya?",options:["Membiarkan teman menggambar jika belum mau bercerita","Memaksa teman menyebut alamat rumah","Mengejek teman"],answer:0,explain:"Anak boleh memilih informasi yang aman dan nyaman untuk dibagikan."}
+];
+
+let student = {name:"",className:""};
+let guideIndex = 0;
+let learnIndex = 0;
+let learnDone = Array(6).fill(false);
+let learnFeedback = Array(6).fill(null);
+let gameIndex = 0;
+let gameSolved = Array(10).fill(false);
+let gameScore = 0;
+let gameOrder = [];
+let gameAssignments = {};
+let selectedTile = null;
+let gameFeedbackState = null;
+let gameChoice = null;
+let gameComplex = [];
+let lastGameRendered = -1;
+let trainIndex = 0;
+let trainSelected = null;
+let trainSubmitted = false;
+let trainAnswers = Array(10).fill(null);
+let gameInputs = Array(10).fill(null);
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s.id===id));
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(id==="dashboardScreen") renderDashboard();
+}
+function openModal(kind){
+  const box=document.getElementById("modalContent");
+  if(kind==="developer"){
+    box.innerHTML=`<div class="developer-card"><h2 id="modalTitle">Informasi Pengembang</h2><img class="avatar" src="${DEVELOPER.photo}" alt="Foto ${DEVELOPER.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="avatar" style="display:none;place-items:center;font-size:2rem;font-weight:900;color:#075c46;margin:10px auto 15px">LH</div><h3>${DEVELOPER.name}</h3><div class="developer-details"><span>🏫 ${DEVELOPER.school}</span><span>✉️ ${DEVELOPER.email}</span></div><p class="small-note">Pengembang media pembelajaran interaktif Pendidikan Pancasila untuk murid kelas I/Fase A.</p><button class="btn btn-primary" onclick="closeModal()">Kembali ke Cover</button></div>`;
+  }else{
+    const v=verses.hujurat;
+    box.innerHTML=`<h2 id="modalTitle">Tujuan Pembelajaran</h2><p class="lesson-body">Murid dapat mengenal identitas dirinya sesuai dengan jenis kelamin dan hobi agar dapat membangun rasa percaya diri serta sikap saling menghargai keberagaman sebagai wujud cinta kepada Allah Swt. dan sesama.</p><div class="quran-box"><div class="box-label">${v.reference}</div><div class="arabic">${v.arabic}</div><p class="translation">${v.translation}</p><p class="small-note"><strong>Hikmah:</strong> Kita diciptakan beragam agar saling mengenal. Perbedaan bukan alasan untuk mengejek atau merasa lebih baik.</p></div><div class="kbc-box"><div class="box-label">Kurikulum Berbasis Cinta</div>Cintai Allah dan Rasul, sayangi sesama, rawat alam ciptaan-Nya, serta bangga menjaga Gorontalo dan Indonesia. Wujudkan cinta lewat sikap sopan, adil, aman, dan bertanggung jawab.</div><button class="btn btn-primary" onclick="closeModal()">Kembali ke Cover</button>`;
+  }
+  document.getElementById("modalBackdrop").classList.add("show");
+}
+function closeModal(){document.getElementById("modalBackdrop").classList.remove("show")}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+
+document.getElementById("identityForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const name=document.getElementById("studentName").value.trim();
+  const cls=document.getElementById("studentClass").value.trim();
+  const err=document.getElementById("identityError");
+  if(name.length<2||cls.length<1){err.textContent="Nama lengkap dan kelas wajib diisi sebelum melanjutkan.";return}
+  student={name,className:cls};err.textContent="";
+  document.getElementById("guideStudent").textContent=`👋 ${student.name} · ${student.className}`;
+  document.getElementById("studentChip").textContent=`👋 ${student.name} · ${student.className}`;
+  guideIndex=0;renderGuide();showScreen("guideScreen");
+});
+const guideSlides=[
+ {emoji:"👀",title:"1. Amati dan baca",text:"Baca cerita pada setiap slide. Perhatikan contoh tentang identitas, hobi, bahasa, dan lingkungan Gorontalo. Jika ada kata yang sulit, baca pelan-pelan atau minta bantuan guru."},
+ {emoji:"💡",title:"2. Coba tantangannya",text:"Di bagian bawah materi, pilih jawaban yang menurutmu tepat. Jika jawaban belum benar, baca umpan balik dan coba lagi. Kamu perlu menyelesaikan setiap slide agar bisa membuka tahap berikutnya."},
+ {emoji:"🎉",title:"3. Bermain, berlatih, dan lihat laporan",text:"Setelah Belajar selesai, menu Bermain terbuka. Selesaikan 10 tantangan, lalu kerjakan 10 soal Berlatih. Pada akhir kegiatan, kamu dapat melihat hasil dan mencetak laporan untuk guru."}
+];
+function renderGuide(){
+ const g=guideSlides[guideIndex];document.getElementById("guideNumber").textContent=`Panduan ${guideIndex+1} dari ${guideSlides.length}`;
+ document.getElementById("guideEmoji").textContent=g.emoji;document.getElementById("guideTitle").textContent=g.title;document.getElementById("guideText").textContent=g.text;
+ document.getElementById("guideProgress").style.width=`${(guideIndex+1)/guideSlides.length*100}%`;
+ document.getElementById("guideBack").disabled=guideIndex===0;
+ document.getElementById("guideNext").textContent=guideIndex===guideSlides.length-1?"Masuk ke Menu Utama →":"Selanjutnya →";
+ document.getElementById("guideDots").innerHTML=guideSlides.map((_,i)=>`<span class="dot ${i===guideIndex?"active":""}"></span>`).join("");
+}
+document.getElementById("guideBack").onclick=()=>{if(guideIndex>0){guideIndex--;renderGuide()}};
+document.getElementById("guideNext").onclick=()=>{if(guideIndex<guideSlides.length-1){guideIndex++;renderGuide()}else showScreen("dashboardScreen")};
+
+function renderDashboard(){
+ const learnUnlocked=true,gameUnlocked=learnDone.every(Boolean),trainUnlocked=gameSolved.every(Boolean);
+ document.getElementById("learnStatus").textContent="🔓 Terbuka";document.getElementById("learnStatus").className="status";
+ document.getElementById("gameStatus").textContent=gameUnlocked?"🔓 Terbuka":"🔒 Terkunci";document.getElementById("gameStatus").className="status"+(gameUnlocked?"":" locked");
+ document.getElementById("trainStatus").textContent=trainUnlocked?"🔓 Terbuka":"🔒 Terkunci";document.getElementById("trainStatus").className="status"+(trainUnlocked?"":" locked");
+ document.getElementById("gameCard").classList.toggle("locked",!gameUnlocked);document.getElementById("trainCard").classList.toggle("locked",!trainUnlocked);
+ document.getElementById("learnProgress").style.width=`${learnDone.filter(Boolean).length/6*100}%`;
+ document.getElementById("gameProgress").style.width=`${gameSolved.filter(Boolean).length/10*100}%`;
+ document.getElementById("trainProgress").style.width=`${trainAnswers.filter(Boolean).length/10*100}%`;
+ document.getElementById("gameOpenButton").textContent=gameUnlocked?"Mulai Bermain →":"Selesaikan Belajar dahulu";
+ document.getElementById("trainOpenButton").textContent=trainUnlocked?"Mulai Berlatih →":"Selesaikan Bermain dahulu";
+}
+function openMenu(which){
+ if(which==="learn"){showScreen("learnScreen");renderLearn();return}
+ if(which==="game"){
+   if(!learnDone.every(Boolean)){showLockMessage("Menu BERMAIN masih terkunci. Selesaikan keenam slide BELAJAR dan tantangan kecil di setiap slide terlebih dahulu.");return}
+   if(gameIndex>=10)gameIndex=10;showScreen("gameScreen");renderGame();return
+ }
+ if(which==="train"){
+   if(!gameSolved.every(Boolean)){showLockMessage("Menu BERLATIH masih terkunci. Selesaikan semua 10 tantangan BERMAIN terlebih dahulu.");return}
+   if(trainAnswers.every(Boolean)){buildReport();showScreen("reportScreen");return}
+   showScreen("trainScreen");renderTrain();return
+ }
+}
+function showLockMessage(message){
+ document.getElementById("modalContent").innerHTML=`<h2 id="modalTitle">Satu langkah lagi! 🔐</h2><p class="lesson-body">${message}</p><p class="small-note">Kamu pasti bisa. Selesaikan tahap sebelumnya untuk membuka petualangan berikutnya.</p><button class="btn btn-primary" onclick="closeModal()">Baik, aku mengerti</button>`;
+ document.getElementById("modalBackdrop").classList.add("show");
+}
+function renderLearn(){
+ const s=learnSlides[learnIndex],v=verses[s.verse],done=learnDone[learnIndex],feedback=learnFeedback[learnIndex];
+ document.getElementById("learnTitle").textContent=s.title;document.getElementById("learnCounter").textContent=`Slide ${learnIndex+1} dari 6`;
+ document.getElementById("learnBar").style.width=`${(learnDone.filter(Boolean).length)/6*100}%`;
+ const lessonVisuals=[
+  {icon:"🪪",buddy:"👧🏻 👦🏽",title:"Aku punya identitas!",caption:"Namaku, kelasku, dan kesukaanku adalah bagian dari diriku."},
+  {icon:"🤝",buddy:"👧🏻 💚 👦🏽",title:"Semua teman berharga",caption:"Anak laki-laki dan perempuan sama-sama boleh belajar dan berkarya."},
+  {icon:"⚽",buddy:"📚 🎨 🌱",title:"Hobi membuatku gembira",caption:"Hobi kita boleh sama atau berbeda. Yuk, saling menghargai!"},
+  {icon:"💬",buddy:"🇮🇩 🗨️ 🌺",title:"Ayo berbicara sopan",caption:"Gunakan bahasa yang baik dan dengarkan teman berbicara."},
+  {icon:"🌈",buddy:"🧒🏻 🧒🏽 🧒🏼",title:"Berbeda tetap berteman",caption:"Kita bisa bermain dan belajar bersama meski berbeda."},
+  {icon:"🌟",buddy:"🧹 🌿 💛",title:"Aku anak hebat dan bertanggung jawab",caption:"Berani mencoba, membantu teman, dan menjaga lingkungan."}
+ ];
+ const lv=lessonVisuals[learnIndex];
+ document.getElementById("learnContent").innerHTML=`<div class="lesson-animation-strip"><span class="lesson-animated-icon" aria-hidden="true">${lv.icon}</span><div class="lesson-animation-copy"><strong>${lv.title}</strong><p>${lv.caption}</p></div><span class="lesson-buddy" aria-hidden="true">${lv.buddy}</span></div><div class="lesson-body"><p>${s.body}</p><div class="local-box"><div class="box-label">🌿 Konteks lokal Gorontalo</div><p>${s.local}</p></div><div class="kbc-box"><div class="box-label">💚 Kurikulum Berbasis Cinta</div><p>${s.kbc}</p></div><div class="quran-box"><div class="box-label">📖 ${v.reference}</div><div class="arabic">${v.arabic}</div><p class="translation">${v.translation}</p><p><strong>Korelasi konsep:</strong> ${v.correlation}</p></div></div><div class="activity"><h3>✨ Tantangan Slide ${learnIndex+1}</h3><p>${s.q}</p><div class="option-grid">${s.options.map((o,i)=>`<button class="option-btn ${done&&i===s.answer?"correct":""}" data-learn-answer="${i}" ${done?"disabled":""}><span>${String.fromCharCode(65+i)}.</span><span>${o}</span></button>`).join("")}</div><div id="learnFeedback" class="feedback ${feedback?"show "+(feedback.ok?"good":"bad"):""}">${feedback?feedback.text:""}</div></div>`;
+ document.querySelectorAll("[data-learn-answer]").forEach(b=>b.onclick=()=>{
+   if(learnDone[learnIndex])return;
+   const chosen=Number(b.dataset.learnAnswer);
+   if(chosen===s.answer){learnDone[learnIndex]=true;learnFeedback[learnIndex]={ok:true,text:"Hebat! Jawabanmu benar. "+s.explain}}
+   else learnFeedback[learnIndex]={ok:false,text:"Belum tepat. Coba baca kembali materi, lalu pilih jawaban lain."};
+   renderLearn();
+ });
+ document.getElementById("learnPrev").disabled=learnIndex===0;
+ document.getElementById("learnNext").disabled=!done;
+ document.getElementById("learnNext").textContent=learnIndex===5?"Selesaikan Belajar ✓":"Selanjutnya →";
+}
+document.getElementById("learnPrev").onclick=()=>{if(learnIndex>0){learnIndex--;renderLearn()}};
+document.getElementById("learnNext").onclick=()=>{
+ if(!learnDone[learnIndex])return;
+ if(learnIndex<5){learnIndex++;renderLearn()}
+ else{renderDashboard();showScreen("dashboardScreen");document.getElementById("modalContent").innerHTML=`<h2 id="modalTitle">Belajar selesai! 🌟</h2><p class="lesson-body">Kamu sudah menuntaskan keenam slide. Menu <strong>BERMAIN</strong> sekarang terbuka. Lanjutkan 10 tantangan untuk membuka asesmen.</p><button class="btn btn-primary" onclick="closeModal();openMenu('game')">Mulai Bermain →</button>`;document.getElementById("modalBackdrop").classList.add("show")}
+};
+
+function renderGame(){
+ if(gameIndex>=10){
+   const accuracy=Math.round(gameScore/100*100);
+   document.getElementById("gameCounter").textContent="Rekap Tantangan";
+   document.getElementById("gameBar").style.width="100%";
+   document.getElementById("gameBody").innerHTML=`<div class="eyebrow">🎉 Petualangan selesai</div><h2 style="color:var(--green)">Hebat, ${escapeHtml(student.name)}!</h2><p class="lesson-body">Kamu telah menyelesaikan 10 tantangan. Setiap tantangan yang benar bernilai 10 poin.</p><div class="summary-grid"><div class="stat-card"><strong>${gameScore}/100</strong><span>Skor Bermain</span></div><div class="stat-card"><strong>${accuracy}%</strong><span>Akurasi akhir</span></div><div class="stat-card"><strong>10/10</strong><span>Tantangan tuntas</span></div></div><div class="kbc-box"><div class="box-label">💚 Refleksi cinta</div>Kamu sudah berlatih mengenali diri, menghargai bahasa dan hobi teman, serta menjaga lingkungan. Terus lakukan sikap baik itu di rumah dan madrasah.</div><button class="btn btn-primary" onclick="showScreen('dashboardScreen');renderDashboard()">Kembali ke Menu Utama</button>`;
+   document.getElementById("gameFeedback").className="feedback";document.getElementById("gameFeedback").textContent="";
+   document.getElementById("gamePrev").style.display="none";document.getElementById("gameCheck").style.display="none";document.getElementById("gameNext").style.display="none";
+   renderDashboard();return;
+ }
+ document.getElementById("gamePrev").style.display="inline-flex";document.getElementById("gameCheck").style.display="inline-flex";document.getElementById("gameNext").style.display="inline-flex";
+ const c=gameChallenges[gameIndex];
+ if(lastGameRendered!==gameIndex){gameOrder=c.items?[...c.items]:[];gameAssignments={};selectedTile=null;gameChoice=null;gameComplex=[];gameFeedbackState=null;lastGameRendered=gameIndex}
+ document.getElementById("gameCounter").textContent=`Tantangan ${gameIndex+1} dari 10`;
+ document.getElementById("gameBar").style.width=`${(gameIndex+(gameSolved[gameIndex]?1:0))/10*100}%`;
+ document.getElementById("gameBody").innerHTML=`<div class="eyebrow">${c.title}</div><div class="stimulus">${c.stimulus}</div><div class="question-line">${c.question}</div><div id="gameTask" class="task-grid">${gameTaskMarkup(c)}</div>`;
+ const fb=document.getElementById("gameFeedback");
+ fb.className="feedback "+(gameSolved[gameIndex]?"show good":"");fb.textContent=gameSolved[gameIndex]?"Tantangan ini sudah kamu selesaikan dengan benar. Kamu boleh melanjutkan.":(gameFeedbackState?gameFeedbackState.text:"");
+ document.getElementById("gameCheck").disabled=gameSolved[gameIndex];
+ document.getElementById("gameNext").disabled=!gameSolved[gameIndex];
+ document.getElementById("gameNext").textContent=gameIndex===9?"Lihat Rekap →":"Berikutnya →";
+ document.getElementById("gamePrev").disabled=gameIndex===0;
+ bindGameTask(c);
+}
+function gameTaskMarkup(c){
+ if(c.type==="match")return c.pairs.map((p,i)=>`<div class="match-row"><strong>${p[0]}</strong><select data-match="${i}" aria-label="Pasangan untuk ${p[0]}"><option value="">Pilih pasangan…</option>${c.choices.map(x=>`<option value="${escapeAttr(x)}">${x}</option>`).join("")}</select></div>`).join("");
+ if(c.type==="order")return `<p class="small-note">Gunakan tombol ↑ dan ↓ untuk mengubah urutan.</p><div class="order-list">${gameOrder.map((x,i)=>`<div class="order-item"><span class="order-text">${i+1}. ${x}</span><span class="order-controls"><button class="mini-btn" data-move="${i-1}" ${i===0?"disabled":""} aria-label="Pindah ke atas">↑</button><button class="mini-btn" data-move="${i+1}" ${i===gameOrder.length-1?"disabled":""} aria-label="Pindah ke bawah">↓</button></span></div>`).join("")}</div>`;
+ if(c.type==="drag"){
+   return `<p class="small-note">Ketuk satu kartu, lalu ketuk kotak kelompok. Kamu juga dapat menyeret kartu dengan mouse.</p><div class="drag-tiles">${c.tiles.map((t,i)=>`<button class="drag-tile ${selectedTile===i?"active":""} ${gameAssignments[i]?"assigned":""}" draggable="true" data-tile="${i}">${t.text}${gameAssignments[i]?" ✓":""}</button>`).join("")}</div><div class="drop-zones">${c.categories.map(cat=>`<div class="drop-zone" data-target="${cat.id}" tabindex="0" role="button" aria-label="Pindahkan kartu ke ${cat.label}"><h4>${cat.label}</h4><div class="assigned-list">${c.tiles.map((t,i)=>gameAssignments[i]===cat.id?`<span class="assigned-chip">${t.text}</span>`:"").join("")}</div></div>`).join("")}</div>`;
+ }
+ if(c.type==="mcq")return `<div class="option-grid">${c.options.map((o,i)=>`<button class="option-btn ${gameChoice===i?"selected":""}" data-game-choice="${i}"><span>${String.fromCharCode(65+i)}.</span><span>${o}</span></button>`).join("")}</div>`;
+ if(c.type==="complex")return `<div class="complex-list">${c.options.map((o,i)=>`<label class="check-option"><input type="checkbox" data-game-complex="${i}" ${gameComplex.includes(i)?"checked":""}><span>${o}</span></label>`).join("")}</div>`;
+ return "";
+}
+function bindGameTask(c){
+ document.querySelectorAll("[data-game-choice]").forEach(b=>b.onclick=()=>{if(gameSolved[gameIndex])return;gameChoice=Number(b.dataset.gameChoice);document.querySelectorAll("[data-game-choice]").forEach(x=>x.classList.toggle("selected",x===b))});
+ document.querySelectorAll("[data-game-complex]").forEach(ch=>ch.onchange=()=>{const n=Number(ch.dataset.gameComplex);gameComplex=ch.checked?[...new Set([...gameComplex,n])]:gameComplex.filter(x=>x!==n)});
+ document.querySelectorAll("[data-move]").forEach(b=>b.onclick=()=>{const from=Number(b.dataset.move);const current=Number(b.closest(".order-item").querySelector("[data-move]").dataset.move)+1;const target=from;if(target<0||target>=gameOrder.length)return;const temp=gameOrder[current];gameOrder[current]=gameOrder[target];gameOrder[target]=temp;document.getElementById("gameTask").innerHTML=gameTaskMarkup(c);bindGameTask(c)});
+ document.querySelectorAll("[data-tile]").forEach(tile=>{
+   tile.onclick=()=>{if(gameSolved[gameIndex])return;selectedTile=Number(tile.dataset.tile);document.getElementById("gameTask").innerHTML=gameTaskMarkup(c);bindGameTask(c)};
+   tile.ondragstart=e=>{selectedTile=Number(tile.dataset.tile);if(e.dataTransfer)e.dataTransfer.setData("text/plain",tile.dataset.tile)};
+ });
+ document.querySelectorAll("[data-target]").forEach(zone=>{
+   zone.onclick=()=>{if(gameSolved[gameIndex]||selectedTile===null)return;gameAssignments[selectedTile]=zone.dataset.target;selectedTile=null;document.getElementById("gameTask").innerHTML=gameTaskMarkup(c);bindGameTask(c)};
+   zone.ondragover=e=>e.preventDefault();
+   zone.ondrop=e=>{e.preventDefault();if(gameSolved[gameIndex])return;const raw=e.dataTransfer?.getData("text/plain");const idx=raw!==""&&raw!==undefined?Number(raw):selectedTile;if(idx===null||Number.isNaN(idx))return;gameAssignments[idx]=zone.dataset.target;selectedTile=null;document.getElementById("gameTask").innerHTML=gameTaskMarkup(c);bindGameTask(c)};
+   zone.onkeydown=e=>{if((e.key==="Enter"||e.key===" ")&&selectedTile!==null){e.preventDefault();zone.click()}};
+ });
+}
+document.getElementById("gameCheck").onclick=()=>{
+ if(gameIndex>=10)return;const c=gameChallenges[gameIndex];let ok=false; let userAns = "";
+ if(c.type==="match"){
+   userAns = c.pairs.map((_,i)=>document.querySelector(`[data-match="${i}"]`)?.value||"-").join(", ");
+   ok=c.pairs.every((_,i)=>document.querySelector(`[data-match="${i}"]`)?.value===c.answer[i]);
+ }
+ if(c.type==="order"){
+   userAns = gameOrder.join(" -> ");
+   ok=gameOrder.length===c.answer.length&&gameOrder.every((x,i)=>x===c.answer[i]);
+ }
+ if(c.type==="drag"){
+   userAns = c.tiles.map((t,i)=>`${t.text}: ${gameAssignments[i]||'-'}`).join("; ");
+   ok=c.tiles.every((t,i)=>gameAssignments[i]===t.category);
+ }
+ if(c.type==="mcq"){
+   userAns = gameChoice !== null ? c.options[gameChoice] : "-";
+   ok=gameChoice===c.answer;
+ }
+ if(c.type==="complex"){
+   userAns = gameComplex.map(idx=>c.options[idx]).join(", ");
+   ok=gameComplex.length===c.answer.length&&c.answer.every(n=>gameComplex.includes(n));
+ }
+ gameInputs[gameIndex] = { answerText: userAns, isCorrect: ok };
+ const fb=document.getElementById("gameFeedback");
+ if(ok){
+   if(!gameSolved[gameIndex])gameScore+=10;
+   gameSolved[gameIndex]=true;gameFeedbackState={ok:true,text:"Benar sekali! "+c.explain};
+   fb.className="feedback show good";fb.textContent=gameFeedbackState.text;
+   document.getElementById("gameCheck").disabled=true;document.getElementById("gameNext").disabled=false;
+   document.getElementById("gameBar").style.width=`${(gameIndex+1)/10*100}%`;
+ }else{
+   gameFeedbackState={ok:false,text:"Belum tepat. Baca kembali stimulus dan periksa pilihanmu, lalu coba lagi."};
+   fb.className="feedback show bad";fb.textContent=gameFeedbackState.text;
+ }
+};
+document.getElementById("gamePrev").onclick=()=>{if(gameIndex>0){gameIndex--;renderGame()}};
+document.getElementById("gameNext").onclick=()=>{if(!gameSolved[gameIndex])return;gameIndex++;lastGameRendered=-1;renderGame();renderDashboard()};
+
+function renderTrain(){
+ if(trainIndex>=assessment.length){buildReport();showScreen("reportScreen");return}
+ const q=assessment[trainIndex];
+ trainSelected=null;trainSubmitted=false;
+ document.getElementById("trainCounter").textContent=`Soal ${trainIndex+1} dari 10`;
+ document.getElementById("trainBar").style.width=`${trainIndex/10*100}%`;
+ document.getElementById("trainBody").innerHTML=`<div class="content-head"><h2 style="margin:0">${q.title}</h2><span class="level level-${q.level}">Level ${q.level} · ${q.level===1?"Dasar":q.level===2?"Sedang":"HOTS"}</span></div><div class="stimulus">${q.stimulus}</div><div class="question-line">${q.question}</div><div id="trainOptions" class="option-grid">${q.options.map((o,i)=>`<button class="option-btn" data-train-choice="${i}"><span>${String.fromCharCode(65+i)}.</span><span>${o}</span></button>`).join("")}</div>`;
+ document.getElementById("trainFeedback").className="feedback";document.getElementById("trainFeedback").textContent="";
+ document.getElementById("trainSubmit").style.display="inline-flex";document.getElementById("trainSubmit").disabled=false;document.getElementById("trainNext").disabled=true;document.getElementById("trainNext").style.display="inline-flex";
+ document.getElementById("trainNext").textContent=trainIndex===9?"Lihat Laporan →":"Soal Berikutnya →";
+ document.getElementById("trainHint").textContent=`Bobot soal: ${q.weight} poin · Pilih satu jawaban terbaik.`;
+ document.querySelectorAll("[data-train-choice]").forEach(b=>b.onclick=()=>{if(trainSubmitted)return;trainSelected=Number(b.dataset.trainChoice);document.querySelectorAll("[data-train-choice]").forEach(x=>x.classList.toggle("selected",x===b))});
+}
+document.getElementById("trainSubmit").onclick=()=>{
+ if(trainSelected===null){const f=document.getElementById("trainFeedback");f.className="feedback show info";f.textContent="Pilih satu jawaban sebelum mengunci jawaban.";return}
+ const q=assessment[trainIndex],ok=trainSelected===q.answer;
+ trainAnswers[trainIndex]={choice:trainSelected,choiceText:q.options[trainSelected],correct:ok,score:ok?q.weight:0};
+ trainSubmitted=true;
+ document.querySelectorAll("[data-train-choice]").forEach((b,i)=>{b.disabled=true;if(i===q.answer)b.classList.add("correct");else if(i===trainSelected&&!ok)b.classList.add("wrong")});
+ const f=document.getElementById("trainFeedback");f.className="feedback show "+(ok?"good":"bad");f.textContent=(ok?"Jawaban benar. ":"Belum tepat. ")+q.explain;
+ document.getElementById("trainSubmit").style.display="none";document.getElementById("trainNext").disabled=false;
+ document.getElementById("trainBar").style.width=`${(trainIndex+1)/10*100}%`;
+};
+document.getElementById("trainNext").onclick=()=>{if(!trainSubmitted)return;trainIndex++;renderDashboard();if(trainIndex>=10){buildReport();showScreen("reportScreen")}else renderTrain()};
+
+const motivationQuotes=[
+ {quote:"Aku berani mencoba. Kalau salah, aku belajar lagi!",support:"Setiap usaha membuatku semakin hebat.",mascot:"🌈"},
+ {quote:"Sedikit demi sedikit, aku pasti bisa!",support:"Belajar pelan-pelan juga membuatku maju.",mascot:"🐢"},
+ {quote:"Aku rajin belajar dan senang bertanya!",support:"Bertanya membantu kita memahami hal baru.",mascot:"💡"},
+ {quote:"Aku anak hebat dengan caraku sendiri!",support:"Aku percaya diri dan tetap menghargai teman.",mascot:"🌟"},
+ {quote:"Hari ini aku belajar sesuatu yang baru!",support:"Setiap hari adalah kesempatan untuk tumbuh.",mascot:"🌱"},
+ {quote:"Aku tidak menyerah saat soal terasa sulit!",support:"Aku bisa meminta bantuan guru dan mencoba lagi.",mascot:"💪"}
+];
+let motivationIndex=0;
+function renderMotivation(){
+ const q=motivationQuotes[motivationIndex];
+ document.getElementById("motivationQuote").textContent=q.quote;
+ document.getElementById("motivationSupport").textContent=q.support;
+ document.getElementById("quoteMascot").textContent=q.mascot;
+}
+function openMotivation(){motivationIndex=0;renderMotivation();showScreen("motivationScreen")}
+function nextMotivation(){motivationIndex=(motivationIndex+1)%motivationQuotes.length;renderMotivation()}
+const animationScenes={
+ identity:{title:"Aku punya identitas",text:"Setiap anak punya nama, ciri diri, dan cerita masing-masing. Sebutkan namamu dengan bangga!",characters:["👧🏻","👦🏽","👧🏽"],objects:"🪪 📛 ✨"},
+ hobby:{title:"Hobi kita beragam",text:"Ada yang suka membaca, menggambar, bermain bola, atau merawat tanaman. Semua hobi yang baik layak dihargai.",characters:["📚","⚽","🎨"],objects:"📖 ⚽ 🖍️ 🌱"},
+ language:{title:"Bahasa menyatukan kita",text:"Berbicaralah dengan sopan. Dengarkan teman dan tanyakan arti kata dengan ramah jika belum paham.",characters:["💬","👧🏻","🗨️"],objects:"🇮🇩 🗣️ 🌺"},
+ respect:{title:"Berbeda tetap berteman",text:"Jangan mengejek nama, hobi, jenis kelamin, atau bahasa teman. Ajak semua teman bermain dan belajar bersama.",characters:["🤝","🧒🏽","💚"],objects:"🌈 💛 🤝 ✨"}
+};
+function openAnimation(key){
+ const scene=animationScenes[key]||animationScenes.identity;
+ document.getElementById("sceneTitle").textContent=scene.title;
+ document.getElementById("sceneText").textContent=scene.text;
+ document.getElementById("sceneCharacter1").textContent=scene.characters[0];
+ document.getElementById("sceneCharacter2").textContent=scene.characters[1];
+ document.getElementById("sceneCharacter3").textContent=scene.characters[2];
+ document.getElementById("sceneObjects").textContent=scene.objects;
+ document.querySelectorAll("[data-scene]").forEach(b=>b.classList.toggle("active",b.dataset.scene===key));
+ showScreen("animationScreen");
+}
+
+// SINKRONISASI SOAL KE GOOGLE SHEETS AUTOMATIS
+function syncQuestionsToGAS() {
+  if (!GAS_URL || GAS_URL.includes("URL_GAS_ANDA_DISINI")) return;
+  
+  const allQuestions = [];
+  gameChallenges.forEach((g, i) => {
+    let opts = "";
+    if (g.options) opts = g.options.join(" | ");
+    else if (g.choices) opts = g.choices.join(" | ");
+    else if (g.items) opts = g.items.join(" | ");
+    else if (g.pairs) opts = g.pairs.map(p => p[0]).join(" | ");
+    else if (g.tiles) opts = g.tiles.map(t => t.text).join(" | ");
+
+    allQuestions.push({
+      type: "Bermain",
+      id: `BM-${i+1}`,
+      title: g.title,
+      stimulus: g.stimulus,
+      question: g.question,
+      options: opts
+    });
+  });
+
+  assessment.forEach((a, i) => {
+    allQuestions.push({
+      type: "Berlatih",
+      id: `BL-${i+1}`,
+      title: a.title,
+      stimulus: a.stimulus,
+      question: a.question,
+      options: a.options ? a.options.join(" | ") : ""
+    });
+  });
+
+  fetch(GAS_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action: "syncQuestions", questions: allQuestions })
+  }).catch(e => console.log("Sync error:", e));
+}
+
+// SINKRONISASI HASIL BELAJAR SISWA KE GOOGLE SHEETS
+function sendResultToGAS(payload) {
+  const syncBox = document.getElementById("syncBox");
+  if (!GAS_URL || GAS_URL.includes("https://script.google.com/macros/s/AKfycbwF6rZVtF2PLEoOJA8IAdx6zB-oYGGRo6BnOKWi_krsS-NbZYkjzqThi9yt1x96FZxiEA/exec")) {
+    syncBox.innerHTML = `<span class="sync-status error">⚠️ URL Google Apps Script belum dikonfigurasi.</span>`;
+    return;
+  }
+
+  syncBox.innerHTML = `<span class="sync-status sending">🔄 Menyimpan data ke Google Sheets...</span>`;
+
+  fetch(GAS_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action: "saveResult", data: payload })
+  }).then(() => {
+    syncBox.innerHTML = `<span class="sync-status success">✓ Data hasil belajar berhasil tersimpan di Google Sheets Guru!</span>`;
+  }).catch(err => {
+    console.error(err);
+    syncBox.innerHTML = `<span class="sync-status error">❌ Gagal mengirim data ke Google Sheets.</span>`;
+  });
+}
+
+function buildReport(){
+ const score=trainAnswers.reduce((sum,a)=>sum+(a?.score||0),0);
+ const pred=score>=86?"Sangat Baik":score>=76?"Baik":score>=60?"Cukup":"Perlu Pendampingan";
+ const levelScores=[
+  {name:"Level 1 · Dasar",max:24,score:trainAnswers.slice(0,3).reduce((s,a)=>s+(a?.score||0),0)},
+  {name:"Level 2 · Aplikasi",max:40,score:trainAnswers.slice(3,7).reduce((s,a)=>s+(a?.score||0),0)},
+  {name:"Level 3 · Penalaran/HOTS",max:36,score:trainAnswers.slice(7,10).reduce((s,a)=>s+(a?.score||0),0)}
+ ];
+ const rec=score>=86?"Pertahankan sikap percaya diri, terus menghargai perbedaan, dan menjadi teladan menjaga lingkungan.":score>=76?"Ulangi bagian yang masih sulit dan terus praktikkan cara menyapa serta menghormati teman.":score>=60?"Belajar kembali bersama guru pada bagian identitas, hobi, dan bahasa. Latih soal dengan membaca stimulus perlahan.":"Perlu pendampingan guru/orang tua. Baca materi bersama, gunakan contoh sehari-hari, lalu ulangi asesmen setelah memahami konsep.";
+ const playingAccuracy=gameScore;
+ const date=new Date().toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
+ const levelRows=levelScores.map(l=>`<tr><td>${l.name}</td><td>${l.score} / ${l.max}</td><td>${Math.round(l.score/l.max*100)}%</td></tr>`).join("");
+ const details=assessment.map((q,i)=>`<tr><td>${i+1}</td><td>${q.title.replace(/^Soal \d+ · /,"")}</td><td>${q.level===1?"Dasar":q.level===2?"Sedang":"HOTS"}</td><td>${trainAnswers[i]?.correct?"Benar":"Perlu ditinjau"}</td><td>${trainAnswers[i]?.score||0}/${q.weight}</td></tr>`).join("");
+ document.getElementById("reportPrint").innerHTML=`<div class="report-header"><div class="report-logo">✿</div><div><h2>LAPORAN HASIL BELAJAR MPI</h2><p>Pendidikan Pancasila · Kelas I/Fase A · Madrasah Ibtidaiyah</p><p><strong>Identitas Dirinya Sesuai dengan Jenis Kelamin, Hobi, Bahasa</strong></p></div></div>
+ <p><strong>Pengembang:</strong> ${DEVELOPER.name} · ${DEVELOPER.school} · ${DEVELOPER.email}</p>
+ <table class="report-table"><tr><th style="width:30%">Identitas Siswa</th><th>Data</th></tr><tr><td>Nama lengkap</td><td>${escapeHtml(student.name)}</td></tr><tr><td>Kelas</td><td>${escapeHtml(student.className)}</td></tr><tr><td>Tanggal pengerjaan</td><td>${date}</td></tr></table>
+ <div class="summary-grid"><div class="stat-card"><strong>${score}/100</strong><span>Nilai akhir</span></div><div class="stat-card"><strong>${pred}</strong><span>Predikat</span></div><div class="stat-card"><strong>${playingAccuracy}/100</strong><span>Skor Bermain</span></div></div>
+ <h3>Rekapitulasi Performa Bermain</h3><p>Siswa menyelesaikan ${gameSolved.filter(Boolean).length} dari 10 tantangan. Skor: <strong>${gameScore}/100</strong>. Akurasi performa: <strong>${gameScore}%</strong>.</p>
+ <h3>Penguasaan Level Asesmen</h3><table class="report-table"><thead><tr><th>Level</th><th>Skor</th><th>Penguasaan</th></tr></thead><tbody>${levelRows}</tbody></table>
+ <h3>Rincian Performa Berlatih</h3><table class="report-table"><thead><tr><th>No.</th><th>Kompetensi/Soal</th><th>Level</th><th>Hasil</th><th>Poin</th></tr></thead><tbody>${details}</tbody></table>
+ <div class="kbc-box"><div class="box-label">Catatan Kurikulum Berbasis Cinta</div>Siswa diarahkan untuk bersyukur kepada Allah atas dirinya, menghormati sesama tanpa mengejek jenis kelamin, hobi, atau bahasa, menjaga lingkungan Gorontalo, dan menumbuhkan tanggung jawab sebagai bagian dari Indonesia.</div>
+ <h3>Rekomendasi Guru</h3><p>${rec}</p><p class="small-note">Laporan ini dihasilkan dari jawaban pada media pembelajaran. Gunakan bersama pengamatan guru dan kegiatan kelas, bukan sebagai satu-satunya dasar penilaian murid.</p>
+ <p style="text-align:right;margin-top:28px">Gorontalo, ${date}<br><strong>Pengembang Media Pembelajaran</strong><br>${DEVELOPER.name}</p>`;
+
+ // KIRIM HASIL KE BACKEND GAS
+ let correctCount = 0;
+ let wrongCount = 0;
+ const studentAnswers = {};
+
+ gameInputs.forEach((inp, i) => {
+   studentAnswers[`Bermain Soal ${i+1}`] = inp ? inp.answerText : "-";
+ });
+
+ trainAnswers.forEach((ans, i) => {
+   if (ans) {
+     if (ans.correct) correctCount++; else wrongCount++;
+     studentAnswers[`Berlatih Soal ${i+1}`] = ans.choiceText || "-";
+   } else {
+     wrongCount++;
+     studentAnswers[`Berlatih Soal ${i+1}`] = "-";
+   }
+ });
+
+ sendResultToGAS({
+   studentName: student.name,
+   studentClass: student.className,
+   correctCount: correctCount,
+   wrongCount: wrongCount,
+   answers: studentAnswers
+ });
+}
+
+function downloadReport(){
+ const el=document.getElementById("reportPrint");
+ if(window.html2pdf){
+   window.html2pdf().set({margin:8,filename:`Laporan_MPI_${(student.name||"Siswa").replace(/[^a-z0-9]+/gi,"_")}.pdf`,image:{type:"jpeg",quality:.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}}).from(el).save().catch(()=>printReport());
+ }else printReport();
+}
+function printReport(){document.body.classList.add("printing");window.print();setTimeout(()=>document.body.classList.remove("printing"),1000)}
+window.addEventListener("afterprint",()=>document.body.classList.remove("printing"));
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function escapeAttr(s){return escapeHtml(s)}
+setTimeout(()=>{
+  document.getElementById("splash").classList.add("hide");
+  syncQuestionsToGAS();
+},1700);
+renderDashboard();
+renderMotivation();
+</script>
+</body>
+</html>
